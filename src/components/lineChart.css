@@ -1,0 +1,4 @@
+.recharts-wrapper *:focus:not(:focus-visible) {
+  outline: none;
+  border: none;
+}

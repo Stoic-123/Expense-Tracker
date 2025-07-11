@@ -1,0 +1,60 @@
+/* Selector box (the main input-like area) */
+.dark .ant-select-selector {
+  background-color: transparent !important;
+  color: white !important;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(225, 226, 227, 0.15) 0px 0px 0px 1px !important;
+}
+.white .ant-select-selector {
+  background-color: #dddddd !important;
+  color: #04070f !important;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(92, 94, 95, 0.15) 0px 0px 0px 1px !important;
+}
+.ant-select-selector {
+  border: none !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  padding: 20px 12px !important;
+}
+
+/* Focused/active state */
+.ant-select-focused .ant-select-selector,
+.ant-select-open .ant-select-selector {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 6px !important;
+  color: white !important;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(225, 226, 227, 0.15) 0px 0px 0px 1px !important;
+}
+
+/* Text inside the selector */
+.ant-select-selection-item,
+.ant-select-selection-placeholder {
+  color: white !important;
+}
+
+/* Dropdown menu */
+.ant-select-dropdown {
+  background-color: #0f172a !important;
+  color: white !important;
+  z-index: 2000 !important;
+}
+
+/* Individual options */
+.ant-select-item {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+/* Hovered option */
+.ant-select-item-option-active {
+  background-color: #1e293b !important;
+}
+
+/* Selected option */
+.ant-select-item-option-selected {
+  background-color: #334155 !important;
+  color: white !important;
+}

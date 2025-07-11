@@ -1,0 +1,129 @@
+.all-expense-list ul li {
+  margin-left: -30px;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(225, 226, 227, 0.15) 0px 0px 0px 1px;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+  margin-bottom: 20px;
+}
+.all-expense-list ul li:last-child {
+  margin-bottom: 0px !important;
+}
+.light-li {
+  background-color: #d5d4d4ba;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.light-li:hover {
+  background-color: #bcbcbc !important;
+}
+
+.dark-li {
+  background-color: transparent;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.dark-li:hover {
+  background-color: #1f293788 !important;
+}
+.custom-select-style {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 13px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(225, 226, 227, 0.15) 0px 0px 0px 1px;
+}
+.custom-select-style:focus {
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(225, 226, 227, 0.15) 0px 0px 0px 1px;
+}
+.custom-select-style option {
+  background-color: #020817;
+  color: white;
+}
+.custom-select-style:valid {
+  color: white; /* Real selected value color */
+}
+.ant-select-selector {
+  background-color: #000000 !important;
+  color: white !important;
+}
+
+.ant-picker-dropdown {
+  z-index: 2000 !important;
+}
+.ant-picker {
+  background-color: transparent;
+  border: none;
+  color: white !important;
+  font-size: 13px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(225, 226, 227, 0.15) 0px 0px 0px 1px;
+}
+.ant-picker-focused {
+  background-color: transparent !important;
+  border: none;
+  color: white !important;
+  font-size: 13px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(225, 226, 227, 0.15) 0px 0px 0px 1px;
+}
+.ant-picker:hover {
+  background-color: transparent;
+  border: none;
+  color: white !important;
+  font-size: 13px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(225, 226, 227, 0.15) 0px 0px 0px 1px;
+}
+.ant-picker input::placeholder {
+  color: white !important;
+}
+/* Entire calendar dropdown container */
+.ant-picker-panel-container,
+.ant-picker-panel {
+  background-color: #0f172a !important;
+  color: white !important;
+}
+
+/* Header (month/year and arrows) */
+.ant-picker-header,
+.ant-picker-header button {
+  background-color: #0f172a !important;
+  color: white !important;
+  border: none !important;
+}
+
+/* Weekday labels (Su, Mo, etc.) */
+.ant-picker-content thead tr th {
+  color: white !important;
+}
+
+/* Date cells */
+.ant-picker-cell {
+  color: white !important;
+}
+
+/* Hovered date cell */
+.ant-picker-cell:hover {
+  background-color: #1e293b !important;
+  color: white !important;
+}
+
+/* Selected date cell */
+.ant-picker-cell-selected .ant-picker-cell-inner {
+  background-color: #334155 !important;
+  color: white !important;
+}
+
+/* Today link at the bottom */
+.ant-picker-footer,
+.ant-picker-footer button {
+  background-color: #0f172a !important;
+  color: white !important;
+}
+.ant-picker-input > input {
+  color: white !important;
+}
