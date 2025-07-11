@@ -147,3 +147,119 @@ export const getTotalAmountWeek = async (user_id) => {
   const [row] = await db.query(sql, [user_id]);
   return { row };
 };
+export const getDashboardTotalSpent = async (user_id) => {
+  const sql = `SELECT 
+                SUM(amount) as total
+                FROM expense_tracker
+                WHERE user_id=?
+                AND MONTH(date) = MONTH(CURDATE())
+                AND YEAR(date) = YEAR(CURDATE())
+  `;
+  const sql2 = `SELECT 
+                SUM(amount) as total
+                FROM expense_tracker
+                WHERE user_id=?
+                AND MONTH(date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+                AND YEAR(date) = YEAR(CURDATE() - INTERVAL 1 YEAR)
+  `;
+  const totalThisMonth = await db.query(sql, [user_id]);
+  const totalLastMonth = await db.query(sql2, [user_id]);
+  const thistMonth = totalThisMonth[0];
+  const lastMonth = totalLastMonth[0];
+  let percent = null;
+  if (lastMonth > 0) {
+    percent = ((thistMonth - lastMonth) / lastMonth) * 100;
+  }
+  return {
+    thistMonth,
+    percent: (percent ?? 0).toFixed(2),
+  };
+};
+export const getDashboardAverageDailySpent = async (user_id) => {
+  const sql = `SELECT
+                ROUND(SUM(amount)/COUNT(*),2) as average_daily
+                FROM expense_tracker
+                WHERE user_id =?
+                AND MONTH(date) = MONTH(CURDATE())
+                AND YEAR(date) = YEAR(CURDATE())
+  `;
+  const sql2 = `SELECT
+                  ROUND(SUM(amount)/COUNT(*),2) as average_daily
+                  FROM expense_tracker
+                  WHERE user_id =?
+                  AND MONTH(date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+                  AND YEAR(date) = YEAR(CURDATE() - INTERVAL 1 YEAR)
+  `;
+  const averageThisMonth = await db.query(sql, [user_id]);
+  const averageLastMonth = await db.query(sql, [user_id]);
+  const avgThisMonth = averageThisMonth[0];
+  const avgLastMonth = averageLastMonth[0];
+  let avg_percent = null;
+  if (avgLastMonth > 0) {
+    avg_percent = ((avgThisMonth - avgLastMonth) / avgLastMonth) * 100;
+  }
+  return {
+    avgThisMonth,
+    avg_percent: (avg_percent ?? 0).toFixed(2),
+  };
+};
+export const getDashboardTransaction = async (user_id) => {
+  const sql = `SELECT
+                COUNT(*) as transaction
+                FROM expense_tracker
+                WHERE user_id =?
+                AND MONTH(date) = MONTH(CURDATE())
+                AND YEAR(date) = YEAR(CURDATE())
+  `;
+  const sql2 = `SELECT
+                  COUNT(*) as transaction
+                  FROM expense_tracker
+                  WHERE user_id =?
+                  AND MONTH(date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+                  AND YEAR(date) = YEAR(CURDATE() - INTERVAL 1 YEAR)
+             `;
+  const transactionThismonth = await db.query(sql, [user_id]);
+  const transactionLastmonth = await db.query(sql2, [user_id]);
+  const tranThisMonth = transactionThismonth[0];
+  const tranLastMonth = transactionLastmonth[0];
+  let tran_percent = null;
+  if (tranLastMonth > 0) {
+    tran_percent = ((tranThisMonth - tranLastMonth) / tranLastMonth) * 100;
+  }
+  return {
+    tranThisMonth,
+    tran_percent: (tran_percent ?? 0).toFixed(2),
+  };
+};
+export const getDashboradCategory = async (user_id) => {
+  const sql = `SELECT
+                COUNT(c.id) as category
+                FROM expense_categories c
+                LEFT JOIN expense_tracker e 
+                ON c.id = e.category_id
+                WHERE e.user_id=?
+                AND MONTH(e.date) = MONTH(CURDATE())
+                AND YEAR(e.date) = YEAR(CURDATE())
+  `;
+  const sql2 = `SELECT
+                COUNT(c.id) as category
+                FROM expense_categories c
+                LEFT JOIN expense_tracker e 
+                ON c.id = e.category_id
+                WHERE e.user_id=?
+                AND MONTH(e.date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+                AND YEAR(e.date) = YEAR(CURDATE() - INTERVAL 1 YEAR)
+  `;
+  const categoryThisMonth = await db.query(sql, [user_id]);
+  const categoryLastMonth = await db.query(sql2, [user_id]);
+  const catThisMonth = categoryThisMonth[0];
+  const catLastMonth = categoryLastMonth[0];
+  let category_percent = null;
+  if (catLastMonth > 0) {
+    category_percent = ((catThisMonth - catLastMonth) / catLastMonth) * 100;
+  }
+  return {
+    catThisMonth,
+    category_percent: (category_percent ?? 0).toFixed(2),
+  };
+};

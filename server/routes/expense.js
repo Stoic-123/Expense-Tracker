@@ -9,6 +9,7 @@ import {
   selectTotalSpent,
   selectCategoryListMonth,
   selectTotalAmountChart,
+  selectDashboardData,
 } from "../controller/expense.js";
 const router = new Hono();
 
@@ -19,5 +20,6 @@ router.get("/get-daily-expense", requireAuth, selectDailyExpenseData);
 router.get("/get-transaction-list", requireAuth, selectTransationList);
 router.get("/get-total-month-spent", requireAuth, selectTotalSpent);
 router.get("/get-category-list-month", requireAuth, selectCategoryListMonth);
-router.get("get-total-chart", requireAuth, selectTotalAmountChart);
+router.get("/get-total-chart", requireAuth, selectTotalAmountChart);
+router.get("/get-dashboard-data", requireAuth, selectDashboardData);
 export default router;

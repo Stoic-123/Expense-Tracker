@@ -10,6 +10,10 @@ import {
   getTotalSpentMonth,
   getCategoryListMonth,
   getTotalAmountWeek,
+  getDashboardTotalSpent,
+  getDashboardAverageDailySpent,
+  getDashboardTransaction,
+  getDashboradCategory,
 } from "../model/expense.js";
 export const createCategory = async (c) => {
   try {
@@ -239,5 +243,52 @@ export const selectTotalAmountChart = async (c) => {
     });
   } catch (error) {
     return c.json({ result: false, message: error }, 401);
+  }
+};
+export const selectDashboardData = async (c) => {
+  try {
+    const user_id = c.get("user").id;
+    if (!user_id) {
+      return c.json(
+        { result: false, message: "User_id is not defined..!" },
+        401
+      );
+    }
+    const totalSpentData = await getDashboardTotalSpent(user_id);
+    const averageSpentData = await getDashboardAverageDailySpent(user_id);
+    const transactionData = await getDashboardTransaction(user_id);
+    const categoryData = await getDashboradCategory(user_id);
+    const total_spent = totalSpentData.thistMonth[0].total;
+    const total_percent = totalSpentData.percent;
+    const total_average = averageSpentData.avgThisMonth[0].average_daily;
+    const average_percent = averageSpentData.avg_percent;
+    const total_transaction = transactionData.tranThisMonth[0].transaction;
+    const transaction_percent = transactionData.tran_percent;
+    const total_category = categoryData.catThisMonth[0].category;
+    const category_percent = categoryData.category_percent;
+    if (
+      !totalSpentData ||
+      !averageSpentData ||
+      !transactionData ||
+      !categoryData
+    ) {
+      return c.json({ result: false, message: "No data in database..!" }, 401);
+    }
+    return c.json({
+      result: true,
+      message: "Data selected successfully..",
+      data: {
+        total_spent,
+        total_percent,
+        total_average,
+        average_percent,
+        total_transaction,
+        transaction_percent,
+        total_category,
+        category_percent,
+      },
+    });
+  } catch (error) {
+    return c.json({ result: false, message: error });
   }
 };
