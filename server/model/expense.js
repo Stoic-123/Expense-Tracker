@@ -263,3 +263,36 @@ export const getDashboradCategory = async (user_id) => {
     category_percent: (category_percent ?? 0).toFixed(2),
   };
 };
+export const getDailySpentChart = async (user_id) => {
+  const sql = `WITH RECURSIVE dates AS (
+                SELECT CURDATE() - INTERVAL 6 DAY AS day
+                UNION ALL
+                SELECT day + INTERVAL 1 DAY FROM dates WHERE day < CURDATE()
+              )
+              SELECT
+                DATE_FORMAT(d.day, '%b %d') AS day,
+                COALESCE(SUM(e.amount), 0) AS amount
+              FROM dates d
+              LEFT JOIN expense_tracker e
+                ON DATE(e.date) = d.day
+                AND e.user_id = ?
+              GROUP BY d.day
+              ORDER BY d.day;
+  `;
+  const [row] = await db.query(sql, [user_id]);
+  return { row };
+};
+export const getSpentCategoryChart = async (user_id) => {
+  const sql = `SELECT
+                SUM(e.amount) as amount,
+                c.name as category_name,
+                c.color as category_color
+                FROM expense_tracker e
+                LEFT JOIN expense_categories c
+                ON e.category_id = c.id
+                WHERE e.user_id =?
+                GROUP BY c.id
+  `;
+  const [row] = await db.query(sql, [user_id]);
+  return { row };
+};

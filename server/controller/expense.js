@@ -14,6 +14,8 @@ import {
   getDashboardAverageDailySpent,
   getDashboardTransaction,
   getDashboradCategory,
+  getDailySpentChart,
+  getSpentCategoryChart,
 } from "../model/expense.js";
 export const createCategory = async (c) => {
   try {
@@ -290,5 +292,49 @@ export const selectDashboardData = async (c) => {
     });
   } catch (error) {
     return c.json({ result: false, message: error });
+  }
+};
+export const selectDailySpentChart = async (c) => {
+  try {
+    const user_id = c.get("user").id;
+    if (!user_id) {
+      return c.json(
+        { result: false, message: "User_id is not defined..!" },
+        401
+      );
+    }
+    const DailySpentChartData = await getDailySpentChart(user_id);
+    if (!DailySpentChartData) {
+      return c.json({ result: false, message: "No data in database..!" }, 401);
+    }
+    return c.json({
+      result: true,
+      message: "Data selected successfully..",
+      data: DailySpentChartData.row,
+    });
+  } catch (error) {
+    return c.json({ result: false, message: error.message });
+  }
+};
+export const selectCategorySpentChart = async (c) => {
+  try {
+    const user_id = c.get("user").id;
+    if (!user_id) {
+      return c.json(
+        { result: false, message: "User_id is not defined..!" },
+        401
+      );
+    }
+    const CategorySpentChartData = await getSpentCategoryChart(user_id);
+    if (!CategorySpentChartData) {
+      return c.json({ result: false, message: "No data in database..!" }, 401);
+    }
+    return c.json({
+      result: true,
+      message: "Data selected successfully..",
+      data: CategorySpentChartData.row,
+    });
+  } catch (error) {
+    return c.json({ result: false, message: error.message });
   }
 };
