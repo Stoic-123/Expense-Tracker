@@ -36,14 +36,17 @@ export const insertNewExpense = async (
 };
 export const getExpenseRecord = async (user_id) => {
   const sql = `SELECT
+                 e.id,
                  e.amount, 
                  e.description, 
-                 e.date, 
+                 e.date , 
                  c.name as category_name, 
                  c.color as category_color 
                  FROM expense_tracker e 
                  LEFT JOIN expense_categories c ON e.category_id = c.id
-                 WHERE user_id =?`;
+                 WHERE user_id =?
+                 ORDER BY date DESC  
+                 `;
   const [row] = await db.query(sql, [user_id]);
   return { row };
 };
@@ -292,6 +295,22 @@ export const getSpentCategoryChart = async (user_id) => {
                 ON e.category_id = c.id
                 WHERE e.user_id =?
                 GROUP BY c.id
+  `;
+  const [row] = await db.query(sql, [user_id]);
+  return { row };
+};
+export const getTransactionListDashboard = async (user_id) => {
+  const sql = `SELECT
+                e.id,
+                e.amount,
+                e.date,
+                c.name as category_name,
+                c.color as category_color
+                FROM expense_tracker e
+                LEFT JOIN expense_categories c
+                ON e.category_id = c.id
+                WHERE user_id =?
+                ORDER BY date DESC LIMIT 6
   `;
   const [row] = await db.query(sql, [user_id]);
   return { row };

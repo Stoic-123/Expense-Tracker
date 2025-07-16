@@ -1,4 +1,3 @@
-import { message } from "antd";
 import {
   insertNewCategory,
   insertNewExpense,
@@ -16,6 +15,7 @@ import {
   getDashboradCategory,
   getDailySpentChart,
   getSpentCategoryChart,
+  getTransactionListDashboard,
 } from "../model/expense.js";
 export const createCategory = async (c) => {
   try {
@@ -291,7 +291,7 @@ export const selectDashboardData = async (c) => {
       },
     });
   } catch (error) {
-    return c.json({ result: false, message: error });
+    return c.json({ result: false, message: error.message });
   }
 };
 export const selectDailySpentChart = async (c) => {
@@ -333,6 +333,30 @@ export const selectCategorySpentChart = async (c) => {
       result: true,
       message: "Data selected successfully..",
       data: CategorySpentChartData.row,
+    });
+  } catch (error) {
+    return c.json({ result: false, message: error.message });
+  }
+};
+export const selectTransactionListDashboard = async (c) => {
+  try {
+    const user_id = c.get("user").id;
+    if (!user_id) {
+      return c.json(
+        { result: false, message: "User_id is not defined..!" },
+        401
+      );
+    }
+    const TransactionListDashboardData = await getTransactionListDashboard(
+      user_id
+    );
+    if (!TransactionListDashboardData) {
+      return c.json({ result: false, message: "No data in database..!" }, 401);
+    }
+    return c.json({
+      result: true,
+      message: "Data selected successfully..",
+      data: TransactionListDashboardData.row,
     });
   } catch (error) {
     return c.json({ result: false, message: error.message });

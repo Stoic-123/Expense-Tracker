@@ -11,7 +11,7 @@ const generateToken = (id, email, token_version) => {
 };
 
 export const signUpUser = async (c) => {
-  const { name, email, password } = await c.req.json();
+  const { name, email, password } = await c.req.valid("json");
   if (!name || !email || !password) {
     return c.json({ error: "All fields are required" }, 400);
   }
@@ -37,7 +37,7 @@ export const signUpUser = async (c) => {
 };
 
 export const loginUser = async (c) => {
-  const { email, password } = await c.req.json();
+  const { email, password } = await c.req.valid("json");
   if (!email || !password) {
     return c.json(
       { result: false, message: "Email and password required" },
