@@ -8,16 +8,23 @@ A simple and effective expense tracking system that allows users to create custo
 
 - 🔖 Create and manage custom spending categories
 - 🧾 Add and edit expenses under each category
-- 📊 Organized interface to view and track your spending
-- 🧠 Simple and intuitive user experience
+- 📊 Organized interface to view and track your spending that show graph and chart 
+- 🧠 Simple and intuitive user experience 
 
 ---
 
 ## 🚀 Tech Stack
 
-- **Backend:** Node.js, Express.js
-- **Frontend:** HTML, CSS, JavaScript *(or React if used)*
-- **Database:** MongoDB *(or your DB of choice)*
+- **Backend:** Node.js, Hono.js
+- **Frontend:** React.js, Bootstrap, Antd, Mui
+- **Database:** Mysql
 
 ---
+
+## 📦 Installation
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/yourusername/expense-tracker-system.git
+cd expense-tracker-system
 
