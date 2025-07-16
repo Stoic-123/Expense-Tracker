@@ -25,7 +25,7 @@ A simple and effective expense tracking system that allows users to create custo
 
 ### 1. Clone the repository
 ```bash
-git clone [https://github.com/yourusername/expense-tracker-system.git](https://github.com/Stoic-123/Expense-Tracker.git)
+git clone https://github.com/Stoic-123/Expense-Tracker.git
 cd expense-tracker-system
 +Cmd run:
 1. Backend side
