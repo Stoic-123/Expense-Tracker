@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "./components/Sidebar";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import AllExpense from "./components/pages/AllExpense";
 import DailyExpense from "./components/pages/DailyExpense";
@@ -8,11 +8,13 @@ import MonthlyExpense from "./components/pages/MonthlyExpense";
 import Category from "./components/pages/Category";
 import Profile from "./components/pages/Profile";
 import Navbar from "./components/Navbar";
+import Signin from "./components/pages/Signin";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { DarkMode } from "@mui/icons-material";
 const App = () => {
   const [isDark, setIsDark] = useState(false);
   const [isCollapse, setCollapse] = useState(false);
+  const location = useLocation(); // get current path
+
   const handleCollapse = () => {
     setCollapse((prev) => !prev);
   };
@@ -22,6 +24,26 @@ const App = () => {
   const handleLightMode = () => {
     setIsDark(false);
   };
+  // Check if the current route is "/Signin"
+  const isLoginPage = location.pathname === "/auth/signin";
+
+  if (isLoginPage) {
+    return (
+      <div
+        className="d-flex  justify-content-center vh-100"
+        style={{
+          backgroundImage: 'url("/assets/auth.svg")',
+          backgroundSize: "cover",
+          color: isDark ? "#ffffff" : "#000000",
+        }}
+      >
+        <Routes>
+          <Route path="/auth/signin" element={<Signin />} />
+        </Routes>
+      </div>
+    );
+  }
+
   return (
     <div className=" d-flex justify-content-between position-relative">
       <div
@@ -63,14 +85,26 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard isDark={isDark} />} />
-            <Route path="/expenses" element={<AllExpense isDark={isDark} />} />
-            <Route path="/daily" element={<DailyExpense isDark={isDark} />} />
             <Route
-              path="/monthly"
+              path="/dashboard/expenses"
+              element={<AllExpense isDark={isDark} />}
+            />
+            <Route
+              path="/dashboard/daily"
+              element={<DailyExpense isDark={isDark} />}
+            />
+            <Route
+              path="/dashboard/monthly"
               element={<MonthlyExpense isDark={isDark} />}
             />
-            <Route path="/categories" element={<Category isDark={isDark} />} />
-            <Route path="/profile" element={<Profile isDark={isDark}/>} />
+            <Route
+              path="/dashboard/categories"
+              element={<Category isDark={isDark} />}
+            />
+            <Route
+              path="/dashboard/profile"
+              element={<Profile isDark={isDark} />}
+            />
           </Routes>
         </div>
       </div>

@@ -46,6 +46,7 @@ const Sidebar = ({ handleCollapse, isCollapse, isDark }) => {
             <NavLink
               className="link-tag d-flex align-item-center "
               to="/dashboard"
+              end
             >
               {!isCollapse ? (
                 <>
@@ -60,7 +61,7 @@ const Sidebar = ({ handleCollapse, isCollapse, isDark }) => {
           <li>
             <NavLink
               className="link-tag d-flex align-item-center "
-              to="/expenses"
+              to="/dashboard/expenses"
             >
               {!isCollapse ? (
                 <>
@@ -73,7 +74,10 @@ const Sidebar = ({ handleCollapse, isCollapse, isDark }) => {
             </NavLink>
           </li>
           <li>
-            <NavLink className="link-tag d-flex align-item-center " to="/daily">
+            <NavLink
+              className="link-tag d-flex align-item-center "
+              to="/dashboard/daily"
+            >
               {!isCollapse ? (
                 <>
                   <CalendarMonthIcon className="me-2" />
@@ -87,7 +91,7 @@ const Sidebar = ({ handleCollapse, isCollapse, isDark }) => {
           <li>
             <NavLink
               className="link-tag d-flex align-item-center "
-              to="/monthly"
+              to="/dashboard/monthly"
             >
               {!isCollapse ? (
                 <>
@@ -102,7 +106,7 @@ const Sidebar = ({ handleCollapse, isCollapse, isDark }) => {
           <li>
             <NavLink
               className="link-tag d-flex align-item-center  "
-              to="/categories"
+              to="/dashboard/categories"
             >
               {!isCollapse ? (
                 <>
@@ -117,7 +121,7 @@ const Sidebar = ({ handleCollapse, isCollapse, isDark }) => {
           <li>
             <NavLink
               className="link-tag d-flex align-item-center  "
-              to="/profile"
+              to="/dashboard/profile"
             >
               {!isCollapse ? (
                 <>

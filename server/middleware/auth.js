@@ -6,7 +6,7 @@ export const requireAuth = async (c, next) => {
   try {
     const token = getCookie(c, "auth_token");
     if (!token) {
-      return c.json({ result: false, message: "Token is not defined..!" }, 401);
+      return c.json({ result: false, message: "Token is not defined..!" }, 404);
     }
 
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
