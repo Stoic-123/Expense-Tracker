@@ -36,5 +36,9 @@ cd expense-tracker-system
     + cd client
     + bun install
     + bun run dev
+```
+### 🖼️ Screenshots / Demo
+
+![Login Screenshot](./client/public/assets/r1.png)
 
 
