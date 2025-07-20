@@ -39,6 +39,11 @@ cd expense-tracker-system
 ```
 ### 🖼️ Screenshots / Demo
 
-![Login Screenshot](./client/public/assets/r1.png)
+![Login Screenshot](./client/public/assets/r2.png)
+![Dashboard Screenshot](./client/public/assets/r3.png)
+![Expense Screenshot](./client/public/assets/r4.png)
+![Daily Expense Screenshot](./client/public/assets/r5.png)
+![Monthly Expense Screenshot](./client/public/assets/r6.png)
+![Category Screenshot](./client/public/assets/r1.png)
 
 
