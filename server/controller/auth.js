@@ -1,4 +1,13 @@
-import { createUser, findUserByEmail, insertOtp } from "../model/auth.js";
+import {
+  createUser,
+  findUserByEmail,
+  insertOtp,
+  findOtpByUserId,
+  markOTPAsVerified,
+  checkOtpVerify,
+  updatePassword,
+  deleteOtp,
+} from "../model/auth.js";
 import { transporter } from "../mailtrap/mailtrap.config.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -101,6 +110,55 @@ export const sendOtp = async (c) => {
       200
     );
   } catch (error) {
-    return c.json({ result: false, message: error }, 500);
+    return c.json({ result: false, message: error.message }, 500);
+  }
+};
+export const verifyOtp = async (c) => {
+  const { email, otp } = await c.req.json();
+  try {
+    const users = await findUserByEmail(email);
+    if (!users) {
+      return c.json(
+        { result: false, message: "User data is not defined..!" },
+        404
+      );
+    }
+    const user_id = users.id;
+    const otpRows = await findOtpByUserId(user_id, otp);
+    if (!otpRows) {
+      return c.json(
+        { result: false, message: "OTP CODE is not defined..!" },
+        404
+      );
+    }
+    if (new Date(otpRows.expires_at) < new Date()) {
+      return c.json({ result: false, message: "This OTP expired..!" }, 500);
+    }
+    await markOTPAsVerified(otpRows.id);
+    return c.json({ result: true, message: "OTP have been verifying.." });
+  } catch (error) {
+    return c.json({ result: false, message: error.message }, 500);
+  }
+};
+export const resetPassword = async (c) => {
+  const { email, newPassword } = await c.req.json();
+  try {
+    const users = await findUserByEmail(email);
+    if (!users) {
+      return c.json({ result: false, message: "User data is not defined..!" });
+    }
+    const checkOtp = await checkOtpVerify(users.id);
+    if (!checkOtp) {
+      return c.json(
+        { result: false, message: "OTP is not verify yet..!" },
+        500
+      );
+    }
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    await updatePassword(hashPassword, users.id);
+    await deleteOtp(users.id);
+    return c.json({ result: true, message: "Password reset successfully.." });
+  } catch (error) {
+    return c.json({ result: false, message: error.message }, 500);
   }
 };

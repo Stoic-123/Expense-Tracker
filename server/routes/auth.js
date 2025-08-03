@@ -5,7 +5,13 @@ import {
   loginSchema,
   otpSchema,
 } from "../validation/expenseSchema.js";
-import { signUpUser, loginUser, sendOtp } from "../controller/auth.js";
+import {
+  signUpUser,
+  loginUser,
+  sendOtp,
+  verifyOtp,
+  resetPassword,
+} from "../controller/auth.js";
 import { validate } from "../validation/validate.js";
 
 const router = new Hono();
@@ -13,4 +19,6 @@ const router = new Hono();
 router.post("/signup", validate(signUpShcema), signUpUser);
 router.post("/login", validate(loginSchema), loginUser);
 router.post("/sendOtp", validate(otpSchema), sendOtp);
+router.put("/verifyOtp", verifyOtp);
+router.put("/resetPassword", resetPassword);
 export default router;
