@@ -1,8 +1,10 @@
-import { createUser, findUserByEmail } from "../model/auth.js";
+import { createUser, findUserByEmail, insertOtp } from "../model/auth.js";
+import { transporter } from "../mailtrap/mailtrap.config.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { setCookie } from "hono/cookie";
-
+import dotenv from "dotenv";
+dotenv.config();
 const generateToken = (id, email, token_version) => {
   const payload = { id, email, token_version };
   return jwt.sign(payload, process.env.JWT_SECRET, {
@@ -74,4 +76,31 @@ export const loginUser = async (c) => {
   });
 
   return c.json({ result: true, token, message: "Login successfully.." });
+};
+export const sendOtp = async (c) => {
+  const { email } = await c.req.valid("json");
+  try {
+    const users = await findUserByEmail(email);
+    if (!users) {
+      return c.json(
+        { result: false, message: "User data is not defined..!" },
+        404
+      );
+    }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
+    await insertOtp(users.id, otp, expiresAt);
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your OTP Code",
+      text: `Your OTP is: ${otp}`,
+    });
+    return c.json(
+      { result: true, message: "OTP have been send to your email.." },
+      200
+    );
+  } catch (error) {
+    return c.json({ result: false, message: error }, 500);
+  }
 };

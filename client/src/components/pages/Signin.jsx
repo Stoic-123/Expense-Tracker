@@ -22,7 +22,10 @@ const glassStyle = {
 
 const Signin = () => {
   const [showPassword, setShowPassword] = React.useState(false);
-
+  const [agreed, setAgreed] = React.useState(false); // checkbox state
+  const handleCheckbox = () => {
+    setAgreed(!agreed); 
+  };
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => event.preventDefault();
   const handleMouseUpPassword = (event) => event.preventDefault();
@@ -38,7 +41,7 @@ const Signin = () => {
           Welcome back to your financial journey
         </p>
       </div>
-      <div className="col-12 col-md-4 mt-3">
+      <div className="col-12 col-md-5 mt-3">
         <div className="card" style={glassStyle}>
           <h2 className="text-center">Sign In</h2>
           <p
@@ -154,10 +157,16 @@ const Signin = () => {
             </div>
             <div className="d-flex justify-content-between align-items-center">
               <Form.Item className="mt-3 ms-1 ">
-                <Checkbox className="text-white">Remember me</Checkbox>
+                <Checkbox
+                  checked={agreed}
+                  onChange={handleCheckbox}
+                  className="text-white"
+                >
+                  Remember me
+                </Checkbox>
               </Form.Item>
               <div>
-                <Link className="forgotPassword" to="/auth/fortgot-password">
+                <Link className="forgotPassword" to="/auth/forgot-password">
                   Forgot password?
                 </Link>
               </div>
@@ -168,6 +177,7 @@ const Signin = () => {
                 fullWidth
                 variant="contained"
                 type="submit"
+                disabled={!agreed}
               >
                 Submit
               </Button>
@@ -176,11 +186,8 @@ const Signin = () => {
           <hr className="text-secondary" />
           <div className="text-center">
             <p className="text-light">
-              Don't have an account?{" "}
-              <Link
-                to="/auth/signup"
-                className=" text-white-50"
-              >
+              Don't have an account?
+              <Link to="/auth/signup" className=" text-white-50">
                 Create new one
               </Link>
             </p>

@@ -10,6 +10,8 @@ import Profile from "./components/pages/Profile";
 import Navbar from "./components/Navbar";
 import Signin from "./components/pages/Signin";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Signup from "./components/pages/Signup";
+import ForgotPass from "./components/pages/ForgotPass";
 const App = () => {
   const [isDark, setIsDark] = useState(false);
   const [isCollapse, setCollapse] = useState(false);
@@ -25,12 +27,12 @@ const App = () => {
     setIsDark(false);
   };
   // Check if the current route is "/Signin"
-  const isLoginPage = location.pathname === "/auth/signin";
+  const isAuthPage = location.pathname.startsWith("/auth/");
 
-  if (isLoginPage) {
+  if (isAuthPage) {
     return (
       <div
-        className="d-flex  justify-content-center vh-100"
+        className="d-flex  justify-content-center   pb-5"
         style={{
           backgroundImage: 'url("/assets/auth.svg")',
           backgroundSize: "cover",
@@ -39,6 +41,8 @@ const App = () => {
       >
         <Routes>
           <Route path="/auth/signin" element={<Signin />} />
+          <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/auth/forgot-password" element={<ForgotPass />} />
         </Routes>
       </div>
     );
