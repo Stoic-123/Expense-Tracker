@@ -11,7 +11,7 @@ import {
 import { transporter } from "../mailtrap/mailtrap.config.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { setCookie } from "hono/cookie";
+import { setCookie, getCookie } from "hono/cookie";
 import dotenv from "dotenv";
 dotenv.config();
 const generateToken = (id, email, token_version) => {
@@ -80,7 +80,7 @@ export const loginUser = async (c) => {
   await setCookie(c, "auth_token", token, {
     maxAge: 3 * 24 * 60 * 60,
     httpOnly: true,
-    secure: false, // true if using HTTPS
+    secure: false,
     sameSite: "lax",
   });
 
@@ -158,6 +158,18 @@ export const resetPassword = async (c) => {
     await updatePassword(hashPassword, users.id);
     await deleteOtp(users.id);
     return c.json({ result: true, message: "Password reset successfully.." });
+  } catch (error) {
+    return c.json({ result: false, message: error.message }, 500);
+  }
+};
+export const checkAuthRoute = async (c) => {
+  const token = getCookie(c, "auth_token");
+  if (!token) {
+    return c.json({ result: false, message: "Token is not defined..!" }, 404);
+  }
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    return c.json({ result: true, message: "Authenticated..", user: payload });
   } catch (error) {
     return c.json({ result: false, message: error.message }, 500);
   }

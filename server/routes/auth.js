@@ -11,6 +11,7 @@ import {
   sendOtp,
   verifyOtp,
   resetPassword,
+  checkAuthRoute,
 } from "../controller/auth.js";
 import { validate } from "../validation/validate.js";
 
@@ -21,4 +22,5 @@ router.post("/login", validate(loginSchema), loginUser);
 router.post("/sendOtp", validate(otpSchema), sendOtp);
 router.put("/verifyOtp", verifyOtp);
 router.put("/resetPassword", resetPassword);
+router.get("/check-auth", checkAuthRoute);
 export default router;
