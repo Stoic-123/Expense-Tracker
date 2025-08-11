@@ -1,24 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import { Atom } from "react-loading-indicators";
+
 const ProtectRoute = ({ children }) => {
-  const [isAuth, setAuth] = useState(null);
+  const [isAuth, setAuth] = useState(null); // null = loading
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:3030/check-auth", {
+        await axios.get("http://localhost:3030/auth/check-auth", {
           withCredentials: true,
         });
-        setAuth(response.status === 200);
+        setAuth(true); // success
       } catch (error) {
-        setAuth(false);
+        setAuth(false); // failed
       }
     };
     checkAuth();
   }, []);
+
+  if (isAuth === null) {
+    return null; 
+  }
+
   return isAuth ? children : <Navigate to="/auth/signin" replace />;
 };
 

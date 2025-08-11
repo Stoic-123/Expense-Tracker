@@ -2,15 +2,18 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { TextField, InputAdornment, Button } from "@mui/material";
 import { Checkbox, Form, Input } from "antd";
+import { useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
+import { ToastContainer, toast } from "react-toastify";
 import EmailIcon from "@mui/icons-material/Email";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import HttpsIcon from "@mui/icons-material/Https";
+import axios from "axios";
 import "./signin.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 const glassStyle = {
-  background: "rgba(178, 110, 215, 0.2)", // light purple with transparency
+  background: "rgba(178, 110, 215, 0.2)",
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)", // for Safari
   border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -21,14 +24,41 @@ const glassStyle = {
 };
 
 const Signin = () => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
-  const [agreed, setAgreed] = React.useState(false); // checkbox state
+  const [agreed, setAgreed] = React.useState(false);
   const handleCheckbox = () => {
-    setAgreed(!agreed); 
+    setAgreed(!agreed);
   };
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => event.preventDefault();
   const handleMouseUpPassword = (event) => event.preventDefault();
+  const navigate = useNavigate();
+  const fetchSignin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        "http://localhost:3030/auth/login",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      toast.success("Login successful! Redirecting...");
+      navigate("/");
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.message || "Login failed. Please try again."
+      );
+    }
+  };
+
   return (
     <div className="container d-flex flex-column align-items-center mt-5 text-white">
       <div className="text-center">
@@ -57,7 +87,10 @@ const Signin = () => {
           <form className="mt-3 mb-1">
             <div>
               <TextField
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
+                autoComplete="off"
                 required
                 sx={{
                   "& .MuiFilledInput-root": {
@@ -91,11 +124,12 @@ const Signin = () => {
                   ),
                 }}
                 variant="filled"
-                autoComplete="none"
               />
             </div>
             <div>
               <TextField
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 variant="filled"
                 className="mt-4"
@@ -173,6 +207,7 @@ const Signin = () => {
             </div>
             <div>
               <Button
+                onClick={fetchSignin}
                 className="login-submit"
                 fullWidth
                 variant="contained"
@@ -194,6 +229,18 @@ const Signin = () => {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </div>
   );
 };
