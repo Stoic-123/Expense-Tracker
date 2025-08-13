@@ -12,7 +12,7 @@ import {
   getDashboardTotalSpent,
   getDashboardAverageDailySpent,
   getDashboardTransaction,
-  getDashboradCategory,
+  getDashboardCategory,
   getDailySpentChart,
   getSpentCategoryChart,
   getTransactionListDashboard,
@@ -259,14 +259,14 @@ export const selectDashboardData = async (c) => {
     const totalSpentData = await getDashboardTotalSpent(user_id);
     const averageSpentData = await getDashboardAverageDailySpent(user_id);
     const transactionData = await getDashboardTransaction(user_id);
-    const categoryData = await getDashboradCategory(user_id);
-    const total_spent = totalSpentData.thistMonth[0].total;
+    const categoryData = await getDashboardCategory(user_id);
+    const total_spent = totalSpentData.thistMonth;
     const total_percent = totalSpentData.percent;
-    const total_average = averageSpentData.avgThisMonth[0].average_daily;
+    const total_average = averageSpentData.avgThisMonth;
     const average_percent = averageSpentData.avg_percent;
-    const total_transaction = transactionData.tranThisMonth[0].transaction;
+    const total_transaction = transactionData.totalTransaction;
     const transaction_percent = transactionData.tran_percent;
-    const total_category = categoryData.catThisMonth[0].category;
+    const total_category = categoryData.totalCategory;
     const category_percent = categoryData.category_percent;
     if (
       !totalSpentData ||

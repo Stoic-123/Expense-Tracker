@@ -41,7 +41,7 @@ const Category = ({ isDark }) => {
   const [color, setColor] = useState(presetColors[0]);
 
   return (
-    <div>
+    <div className="vh-100 ">
       <div className="d-flex align-items-center justify-content-between">
         <div className="mt-4">
           <h2>Categories</h2>
@@ -134,8 +134,8 @@ const Category = ({ isDark }) => {
           </Modal>
         </div>
       </div>
-      <div className="row gy-4">
-        <div className="col-4">
+      <div className="row gy-md-4 gy-3 ">
+        <div className="col-12 col-md-4">
           <div
             className="card p-4"
             style={{
@@ -181,7 +181,7 @@ const Category = ({ isDark }) => {
             </div>
           </div>
         </div>
-        <div className="col-4">
+        <div className="col-12 col-md-4">
           <div
             className="card p-4"
             style={{
@@ -227,7 +227,7 @@ const Category = ({ isDark }) => {
             </div>
           </div>
         </div>
-        <div className="col-4">
+        <div className="col-12 col-md-4">
           <div
             className="card p-4"
             style={{
@@ -273,7 +273,7 @@ const Category = ({ isDark }) => {
             </div>
           </div>
         </div>
-        <div className="col-4">
+        <div className="col-12 col-md-4">
           <div
             className="card p-4"
             style={{
@@ -319,7 +319,7 @@ const Category = ({ isDark }) => {
             </div>
           </div>
         </div>
-        <div className="col-4">
+        <div className="col-12 col-md-4">
           <div
             className="card p-4"
             style={{
@@ -365,7 +365,7 @@ const Category = ({ isDark }) => {
             </div>
           </div>
         </div>
-        <div className="col-4">
+        <div className="col-12 col-md-4">
           <div
             className="card p-4"
             style={{

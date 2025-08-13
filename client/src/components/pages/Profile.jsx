@@ -13,7 +13,7 @@ const currencyOptions = [
 ];
 const Profile = ({ isDark, value, onChange }) => {
   return (
-    <div>
+    <div className="vh-100">
       <div>
         <h2>Profile Settings</h2>
         <p className="mb-0 text-secondary">

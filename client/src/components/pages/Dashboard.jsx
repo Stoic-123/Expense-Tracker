@@ -4,28 +4,29 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import WalletIcon from "@mui/icons-material/Wallet";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import axios from "axios";
 import MyLineChart from "../LineChart";
 import MyPieChart from "../PieChart";
 import Chip from "@mui/material/Chip";
 import "./dashboard.css";
 
 const Dashboard = ({ isDark }) => {
-  const [dashboardData, setDashboardData] = useState([]);
+  const [dashboardData, setDashboardData] = useState({});
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch("http://localhost:3030/expense/get-dashboard-data");
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log(data)
-        setDashboardData(data);  
+        const response = await axios.get(
+          "http://localhost:3030/expense/get-dashboard-data",
+          { withCredentials: true }
+        );
+        // dashboardData is inside response.data.data
+        setDashboardData(response.data.data);
       } catch (error) {
-        return error;
+        console.log("Error fetching dashboard data:", error.message);
       }
     };
+
     fetchDashboardData();
   }, []);
   return (
@@ -34,8 +35,8 @@ const Dashboard = ({ isDark }) => {
       <p className="text-secondary">
         Welcome back! Here's your expense overview.
       </p>
-      <div className="row gx-4">
-        <div className="col-3">
+      <div className="row gx-md-4 gx-0 gy-3 gy-md-0">
+        <div className="col-12 col-md-3">
           <div
             className="card p-3 border-0"
             style={{
@@ -52,11 +53,13 @@ const Dashboard = ({ isDark }) => {
             </div>
             <h3 className="pt-2 mb-0">${dashboardData.total_spent}</h3>
             <p className="mb-0 text-success" style={{ fontSize: "12.8px" }}>
-              +12.5% from last month
+              {dashboardData.total_percent > 0
+                ? `+${dashboardData.total_percent}% from last month`
+                : `${dashboardData.total_percent}% from last month`}
             </p>
           </div>
         </div>
-        <div className="col-3">
+        <div className="col-12 col-md-3">
           <div
             className="card p-3 border-0"
             style={{
@@ -71,13 +74,15 @@ const Dashboard = ({ isDark }) => {
               <p className="mb-0">Average Daily Spending</p>
               <TrendingUpIcon className="text-secondary" fontSize="small" />
             </div>
-            <h3 className="pt-2 mb-0">$81.67</h3>
+            <h3 className="pt-2 mb-0">${dashboardData.total_average}</h3>
             <p className="mb-0 text-success" style={{ fontSize: "12.8px" }}>
-              -5.2% from last month
+              {dashboardData.average_percent > 0
+                ? `+${dashboardData.average_percent}% from last month`
+                : `${dashboardData.average_percent}% from last month`}
             </p>
           </div>
         </div>
-        <div className="col-3">
+        <div className="col-12 col-md-3">
           <div
             className="card p-3 border-0"
             style={{
@@ -92,13 +97,15 @@ const Dashboard = ({ isDark }) => {
               <p className="mb-0">Total Transactions</p>
               <WalletIcon className="text-secondary" fontSize="small" />
             </div>
-            <h3 className="pt-2 mb-0">45</h3>
+            <h3 className="pt-2 mb-0">{dashboardData.total_transaction}</h3>
             <p className="mb-0 text-success" style={{ fontSize: "12.8px" }}>
-              +8.1% from last month
+              {dashboardData.transaction_percent > 0
+                ? `+${dashboardData.transaction_percent}% from last month`
+                : `${dashboardData.transaction_percent}% from last month`}{" "}
             </p>
           </div>
         </div>
-        <div className="col-3">
+        <div className="col-12 col-md-3">
           <div
             className="card p-3 border-0"
             style={{
@@ -113,15 +120,17 @@ const Dashboard = ({ isDark }) => {
               <p className="mb-0">Active Categories</p>
               <LocalOfferIcon className="text-secondary" fontSize="small" />
             </div>
-            <h3 className="pt-2 mb-0">6</h3>
+            <h3 className="pt-2 mb-0">{dashboardData.total_category}</h3>
             <p className="mb-0 text-success" style={{ fontSize: "12.8px" }}>
-              0% from last month
+              {dashboardData.category_percent > 0
+                ? `+${dashboardData.category_percent}% from last month`
+                : `${dashboardData.category_percent}% from last month`}{" "}
             </p>
           </div>
         </div>
       </div>
-      <div className="row mt-4 gx-4">
-        <div className="col-6">
+      <div className="row mt-4 gx-4 gy-3 gy-md-0">
+        <div className="col-12 col-md-6">
           <div
             className="card p-4 border-0"
             style={{
@@ -137,7 +146,7 @@ const Dashboard = ({ isDark }) => {
             <MyLineChart />
           </div>
         </div>
-        <div className="col-6">
+        <div className="col-12 col-md-6">
           <div
             className="card p-4 border-0"
             style={{

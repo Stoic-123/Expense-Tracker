@@ -163,19 +163,22 @@ export const getDashboardTotalSpent = async (user_id) => {
                 FROM expense_tracker
                 WHERE user_id=?
                 AND MONTH(date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
-                AND YEAR(date) = YEAR(CURDATE() - INTERVAL 1 YEAR)
+                AND YEAR(date) = YEAR(CURDATE() - INTERVAL 1 MONTH)
   `;
   const totalThisMonth = await db.query(sql, [user_id]);
   const totalLastMonth = await db.query(sql2, [user_id]);
   const thistMonth = totalThisMonth[0];
   const lastMonth = totalLastMonth[0];
-  let percent = null;
-  if (lastMonth > 0) {
-    percent = ((thistMonth - lastMonth) / lastMonth) * 100;
+  const thisMonthValue = thistMonth[0]?.total;
+  const lastMonthValue = lastMonth[0]?.total;
+  let percent = 0;
+  if (lastMonthValue !== 0) {
+    percent =
+      ((thisMonthValue - lastMonthValue) / Math.abs(lastMonthValue)) * 100;
   }
   return {
-    thistMonth,
-    percent: (percent ?? 0).toFixed(2),
+    thistMonth: Number(thisMonthValue),
+    percent: Number(percent.toFixed(2)),
   };
 };
 export const getDashboardAverageDailySpent = async (user_id) => {
@@ -191,19 +194,26 @@ export const getDashboardAverageDailySpent = async (user_id) => {
                   FROM expense_tracker
                   WHERE user_id =?
                   AND MONTH(date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
-                  AND YEAR(date) = YEAR(CURDATE() - INTERVAL 1 YEAR)
+                  AND YEAR(date) = YEAR(CURDATE() - INTERVAL 1 MONTH)
   `;
   const averageThisMonth = await db.query(sql, [user_id]);
-  const averageLastMonth = await db.query(sql, [user_id]);
+  const averageLastMonth = await db.query(sql2, [user_id]);
   const avgThisMonth = averageThisMonth[0];
   const avgLastMonth = averageLastMonth[0];
-  let avg_percent = null;
-  if (avgLastMonth > 0) {
-    avg_percent = ((avgThisMonth - avgLastMonth) / avgLastMonth) * 100;
+  const avgThisMonthValue = avgThisMonth[0]?.average_daily || 0;
+  const avgLastMonthValue = avgLastMonth[0]?.average_daily || 0;
+  console.log(avgLastMonthValue);
+  console.log(avgThisMonthValue);
+
+  let avg_percent = 0;
+  if (avgLastMonthValue !== 0) {
+    avg_percent =
+      ((avgThisMonthValue - avgLastMonthValue) / Math.abs(avgLastMonthValue)) *
+      100;
   }
   return {
-    avgThisMonth,
-    avg_percent: (avg_percent ?? 0).toFixed(2),
+    avgThisMonth: Number(avgThisMonthValue),
+    avg_percent: Number(avg_percent.toFixed(2)),
   };
 };
 export const getDashboardTransaction = async (user_id) => {
@@ -214,27 +224,44 @@ export const getDashboardTransaction = async (user_id) => {
                 AND MONTH(date) = MONTH(CURDATE())
                 AND YEAR(date) = YEAR(CURDATE())
   `;
+
   const sql2 = `SELECT
                   COUNT(*) as transaction
                   FROM expense_tracker
                   WHERE user_id =?
                   AND MONTH(date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
-                  AND YEAR(date) = YEAR(CURDATE() - INTERVAL 1 YEAR)
+                  AND YEAR(date) = YEAR(CURDATE() - INTERVAL 1 MONTH)
              `;
+  const sql3 = `SELECT
+                COUNT(*) as transaction
+                FROM expense_tracker
+                WHERE user_id =?
+  `;
   const transactionThismonth = await db.query(sql, [user_id]);
   const transactionLastmonth = await db.query(sql2, [user_id]);
+  const transactionTotal = await db.query(sql3, [user_id]);
   const tranThisMonth = transactionThismonth[0];
   const tranLastMonth = transactionLastmonth[0];
-  let tran_percent = null;
-  if (tranLastMonth > 0) {
-    tran_percent = ((tranThisMonth - tranLastMonth) / tranLastMonth) * 100;
+  const totalTransaction = transactionTotal[0];
+  const tranThisMonthValue = tranThisMonth[0]?.transaction || 0;
+  const tranLastMonthValue = tranLastMonth[0]?.transaction || 0;
+  const totalTransactionValue = totalTransaction[0]?.transaction || 0;
+  console.log(tranThisMonthValue);
+  console.log(tranLastMonthValue);
+
+  let tran_percent = 0;
+  if (tranLastMonthValue !== 0) {
+    tran_percent =
+      ((tranThisMonthValue - tranLastMonthValue) /
+        Math.abs(tranLastMonthValue)) *
+      100;
   }
   return {
-    tranThisMonth,
-    tran_percent: (tran_percent ?? 0).toFixed(2),
+    totalTransaction: totalTransactionValue,
+    tran_percent: Number(tran_percent.toFixed(2)),
   };
 };
-export const getDashboradCategory = async (user_id) => {
+export const getDashboardCategory = async (user_id) => {
   const sql = `SELECT
                 COUNT(c.id) as category
                 FROM expense_categories c
@@ -251,19 +278,33 @@ export const getDashboradCategory = async (user_id) => {
                 ON c.id = e.category_id
                 WHERE e.user_id=?
                 AND MONTH(e.date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
-                AND YEAR(e.date) = YEAR(CURDATE() - INTERVAL 1 YEAR)
+                AND YEAR(e.date) = YEAR(CURDATE() - INTERVAL 1 MONTH)
+  `;
+  const sql3 = `SELECT
+                COUNT(c.id) as category
+                FROM expense_categories c
+                LEFT JOIN expense_tracker e 
+                ON c.id = e.category_id
+                WHERE e.user_id=?
   `;
   const categoryThisMonth = await db.query(sql, [user_id]);
   const categoryLastMonth = await db.query(sql2, [user_id]);
+  const totalCategory = await db.query(sql3, [user_id]);
   const catThisMonth = categoryThisMonth[0];
   const catLastMonth = categoryLastMonth[0];
-  let category_percent = null;
-  if (catLastMonth > 0) {
-    category_percent = ((catThisMonth - catLastMonth) / catLastMonth) * 100;
+  const totalCat = totalCategory[0];
+  const catThisMonthValue = catThisMonth[0]?.category || 0;
+  const catLastMonthValue = catLastMonth[0]?.category || 0;
+  const totalCategoryValue = totalCat[0]?.category || 0;
+  let category_percent = 0;
+  if (catLastMonthValue !== 0) {
+    category_percent =
+      ((catThisMonthValue - catLastMonthValue) / Math.abs(catLastMonthValue)) *
+      100;
   }
   return {
-    catThisMonth,
-    category_percent: (category_percent ?? 0).toFixed(2),
+    totalCategory: totalCategoryValue,
+    category_percent: Number(category_percent.toFixed(2)),
   };
 };
 export const getDailySpentChart = async (user_id) => {

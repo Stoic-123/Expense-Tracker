@@ -11,8 +11,8 @@ const DailyExpense = ({ isDark }) => {
         <h2>Today's Expenses</h2>
         <p className="text-secondary">Track your spending for today</p>
       </div>
-      <div className="row">
-        <div className="col-4">
+      <div className="row gy-3 gy-md-0">
+        <div className="col-12 col-md-4">
           <div
             className="card p-3 border-0"
             style={{
@@ -33,7 +33,7 @@ const DailyExpense = ({ isDark }) => {
             </p>
           </div>
         </div>
-        <div className="col-4">
+        <div className="col-12 col-md-4">
           <div
             className="card p-3 border-0"
             style={{
@@ -54,7 +54,7 @@ const DailyExpense = ({ isDark }) => {
             </p>
           </div>
         </div>
-        <div className="col-4">
+        <div className="col-12 col-md-4">
           <div
             className="card p-3 border-0"
             style={{

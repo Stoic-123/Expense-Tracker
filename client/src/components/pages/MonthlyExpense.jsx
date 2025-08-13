@@ -11,8 +11,8 @@ const MonthlyExpense = ({ isDark }) => {
           Analyze your monthly spending patterns
         </p>
       </div>
-      <div className="row mt-4">
-        <div className="col-6">
+      <div className="row mt-4 gy-3 gy-md-0">
+        <div className="col-12 col-md-6">
           <div
             className="card p-3 border-0"
             style={{
@@ -28,7 +28,7 @@ const MonthlyExpense = ({ isDark }) => {
             <p className="text-secondary mb-0">45 transactions this month</p>
           </div>
         </div>
-        <div className="col-6">
+        <div className="col-12 col-md-6">
           <div
             className="card p-3 border-0"
             style={{
@@ -45,8 +45,8 @@ const MonthlyExpense = ({ isDark }) => {
           </div>
         </div>
       </div>
-      <div className="row mt-4">
-        <div className="col-6">
+      <div className="row mt-1 mt-md-4 gy-3 gy-md-0">
+        <div className="col-12 col-md-6">
           <div
             className="card p-3 border-0"
             style={{
@@ -64,7 +64,7 @@ const MonthlyExpense = ({ isDark }) => {
             </div>
           </div>
         </div>
-        <div className="col-6">
+        <div className="col-12 col-md-6">
           <div
             className="card p-3 border-0"
             style={{

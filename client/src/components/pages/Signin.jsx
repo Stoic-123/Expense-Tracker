@@ -48,8 +48,13 @@ const Signin = () => {
           withCredentials: true,
         }
       );
-      toast.success("Login successful! Redirecting...");
-      navigate("/");
+      toast.success("Login successful! Redirecting...", {
+        autoClose: 2000,
+        onClose: () => {
+          navigate("/");
+        },
+      });
+
       console.log(res.data);
     } catch (error) {
       console.log(error);
@@ -231,7 +236,7 @@ const Signin = () => {
       </div>
       <ToastContainer
         position="top-right"
-        autoClose={3000}
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -239,7 +244,7 @@ const Signin = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
+        theme="colored"
       />
     </div>
   );
