@@ -8,11 +8,12 @@ import axios from "axios";
 import MyLineChart from "../LineChart";
 import MyPieChart from "../PieChart";
 import Chip from "@mui/material/Chip";
+import NoData from "../NoData";
 import "./dashboard.css";
 
 const Dashboard = ({ isDark }) => {
   const [dashboardData, setDashboardData] = useState({});
-
+  const [dasRecentExpense, setDasRecentExpense] = useState([]);
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -28,6 +29,22 @@ const Dashboard = ({ isDark }) => {
     };
 
     fetchDashboardData();
+  }, []);
+  useEffect(() => {
+    async function fetchRecentExpense() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3030/expense/get-transaction-list-dashboard",
+          {
+            withCredentials: true,
+          }
+        );
+        setDasRecentExpense(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchRecentExpense();
   }, []);
   return (
     <div>
@@ -173,7 +190,7 @@ const Dashboard = ({ isDark }) => {
               boxShadow: isDark
                 ? "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(225, 226, 227, 0.15) 0px 0px 0px 1px"
                 : "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px",
-              height: "450px",
+              height: "auto",
             }}
           >
             <h4>Recent Expenses</h4>
@@ -184,182 +201,56 @@ const Dashboard = ({ isDark }) => {
                   listStyleType: "none",
                 }}
               >
-                <li className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center">
-                    <span
-                      className="me-3"
-                      style={{
-                        width: "14px",
-                        height: "14px",
-                        backgroundColor: "red",
-                        borderRadius: "50%",
-                      }}
-                    ></span>
-                    <div>
-                      <p
-                        className="mb-0"
-                        style={{
-                          fontSize: "17px",
-                        }}
+                {dasRecentExpense.length === 0 ? (
+                  <NoData />
+                ) : (
+                  dasRecentExpense.map((data) => {
+                    return (
+                      <li
+                        key={data.id}
+                        className="d-flex align-items-center justify-content-between"
                       >
-                        Lunch at cafe
-                      </p>
-                      <div className="d-flex ">
-                        <p className="pe-2 mb-0 text-secondary">2024-01-15</p>
-                        <Chip
-                          size="small"
-                          sx={{
-                            color: isDark ? "white" : "#020817",
-                            backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                          }}
-                          label="Food"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <h5 className="mb-0">$25.50</h5>
-                </li>
-                <li className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center">
-                    <span
-                      className="me-3"
-                      style={{
-                        width: "14px",
-                        height: "14px",
-                        backgroundColor: "blue",
-                        borderRadius: "50%",
-                      }}
-                    ></span>
-                    <div>
-                      <p
-                        className="mb-0"
-                        style={{
-                          fontSize: "17px",
-                        }}
-                      >
-                        Gas station
-                      </p>
-                      <div className="d-flex ">
-                        <p className="pe-2 mb-0 text-secondary">2024-01-25</p>
-                        <Chip
-                          size="small"
-                          sx={{
-                            color: isDark ? "white" : "#020817",
-                            backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                          }}
-                          label="Transport"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <h5 className="mb-0">$45.50</h5>
-                </li>
-                <li className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center">
-                    <span
-                      className="me-3"
-                      style={{
-                        width: "14px",
-                        height: "14px",
-                        backgroundColor: "yellow",
-                        borderRadius: "50%",
-                      }}
-                    ></span>
-                    <div>
-                      <p
-                        className="mb-0"
-                        style={{
-                          fontSize: "17px",
-                        }}
-                      >
-                        Grocery shopping
-                      </p>
-                      <div className="d-flex ">
-                        <p className="pe-2 mb-0 text-secondary">2024-02-05</p>
-                        <Chip
-                          size="small"
-                          sx={{
-                            color: isDark ? "white" : "#020817",
-                            backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                          }}
-                          label="Food"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <h5 className="mb-0">$87.80</h5>
-                </li>
-                <li className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center">
-                    <span
-                      className="me-3"
-                      style={{
-                        width: "14px",
-                        height: "14px",
-                        backgroundColor: "dodgerblue",
-                        borderRadius: "50%",
-                      }}
-                    ></span>
-                    <div>
-                      <p
-                        className="mb-0"
-                        style={{
-                          fontSize: "17px",
-                        }}
-                      >
-                        Netflix subscription
-                      </p>
-                      <div className="d-flex ">
-                        <p className="pe-2 mb-0 text-secondary">2024-03-09</p>
-                        <Chip
-                          size="small"
-                          sx={{
-                            color: isDark ? "white" : "#020817",
-                            backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                          }}
-                          label="Entertainment"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <h5 className="mb-0">$45.60</h5>
-                </li>
-                <li className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center">
-                    <span
-                      className="me-3"
-                      style={{
-                        width: "14px",
-                        height: "14px",
-                        backgroundColor: "pink",
-                        borderRadius: "50%",
-                      }}
-                    ></span>
-                    <div>
-                      <p
-                        className="mb-0"
-                        style={{
-                          fontSize: "17px",
-                        }}
-                      >
-                        Electricity bill
-                      </p>
-                      <div className="d-flex ">
-                        <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                        <Chip
-                          size="small"
-                          sx={{
-                            color: isDark ? "white" : "#020817",
-                            backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                          }}
-                          label="Utilities
-"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <h5 className="mb-0">$120.00</h5>
-                </li>
+                        <div className="d-flex align-items-center">
+                          <span
+                            className="me-3"
+                            style={{
+                              width: "14px",
+                              height: "14px",
+                              backgroundColor: data.category_color || "red",
+                              borderRadius: "50%",
+                            }}
+                          ></span>
+                          <div>
+                            <p
+                              className="mb-0"
+                              style={{
+                                fontSize: "17px",
+                              }}
+                            >
+                              {data.description}
+                            </p>
+                            <div className="d-flex ">
+                              <p className="pe-2 mb-0 text-secondary">
+                                {new Date(data.date).toLocaleDateString()}{" "}
+                              </p>
+                              <Chip
+                                size="small"
+                                sx={{
+                                  color: isDark ? "white" : "#020817",
+                                  backgroundColor: isDark
+                                    ? "#28364DC1"
+                                    : "#65676B58",
+                                }}
+                                label={data.category_name}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <h5 className="mb-0">${data.amount}</h5>
+                      </li>
+                    );
+                  })
+                )}
               </ul>
             </div>
           </div>

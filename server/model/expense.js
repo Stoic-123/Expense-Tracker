@@ -202,8 +202,6 @@ export const getDashboardAverageDailySpent = async (user_id) => {
   const avgLastMonth = averageLastMonth[0];
   const avgThisMonthValue = avgThisMonth[0]?.average_daily || 0;
   const avgLastMonthValue = avgLastMonth[0]?.average_daily || 0;
-  console.log(avgLastMonthValue);
-  console.log(avgThisMonthValue);
 
   let avg_percent = 0;
   if (avgLastMonthValue !== 0) {
@@ -246,8 +244,6 @@ export const getDashboardTransaction = async (user_id) => {
   const tranThisMonthValue = tranThisMonth[0]?.transaction || 0;
   const tranLastMonthValue = tranLastMonth[0]?.transaction || 0;
   const totalTransactionValue = totalTransaction[0]?.transaction || 0;
-  console.log(tranThisMonthValue);
-  console.log(tranLastMonthValue);
 
   let tran_percent = 0;
   if (tranLastMonthValue !== 0) {
@@ -263,7 +259,7 @@ export const getDashboardTransaction = async (user_id) => {
 };
 export const getDashboardCategory = async (user_id) => {
   const sql = `SELECT
-                COUNT(c.id) as category
+                COUNT(DISTINCT c.id) as category
                 FROM expense_categories c
                 LEFT JOIN expense_tracker e 
                 ON c.id = e.category_id
@@ -272,7 +268,7 @@ export const getDashboardCategory = async (user_id) => {
                 AND YEAR(e.date) = YEAR(CURDATE())
   `;
   const sql2 = `SELECT
-                COUNT(c.id) as category
+                COUNT(DISTINCT c.id) as category
                 FROM expense_categories c
                 LEFT JOIN expense_tracker e 
                 ON c.id = e.category_id
@@ -281,7 +277,7 @@ export const getDashboardCategory = async (user_id) => {
                 AND YEAR(e.date) = YEAR(CURDATE() - INTERVAL 1 MONTH)
   `;
   const sql3 = `SELECT
-                COUNT(c.id) as category
+                COUNT(DISTINCT c.id) as category
                 FROM expense_categories c
                 LEFT JOIN expense_tracker e 
                 ON c.id = e.category_id
@@ -296,6 +292,7 @@ export const getDashboardCategory = async (user_id) => {
   const catThisMonthValue = catThisMonth[0]?.category || 0;
   const catLastMonthValue = catLastMonth[0]?.category || 0;
   const totalCategoryValue = totalCat[0]?.category || 0;
+
   let category_percent = 0;
   if (catLastMonthValue !== 0) {
     category_percent =
@@ -329,7 +326,7 @@ export const getDailySpentChart = async (user_id) => {
 export const getSpentCategoryChart = async (user_id) => {
   const sql = `SELECT
                 SUM(e.amount) as amount,
-                c.name as category_name,
+                c.name as name,
                 c.color as category_color
                 FROM expense_tracker e
                 LEFT JOIN expense_categories c
@@ -343,6 +340,7 @@ export const getSpentCategoryChart = async (user_id) => {
 export const getTransactionListDashboard = async (user_id) => {
   const sql = `SELECT
                 e.id,
+                e.description,
                 e.amount,
                 e.date,
                 c.name as category_name,

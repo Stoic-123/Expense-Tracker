@@ -7,9 +7,11 @@ import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { ToastContainer, toast } from "react-toastify";
 import HttpsIcon from "@mui/icons-material/Https";
 import "./signup.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
 const glassStyle = {
   background: "rgba(178, 110, 215, 0.2)", // light purple with transparency
   backdropFilter: "blur(10px)",
@@ -22,6 +24,11 @@ const glassStyle = {
 };
 
 const Signup = () => {
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [agreed, setAgreed] = React.useState(false); // checkbox state
   const handleCheckbox = () => {
@@ -30,6 +37,34 @@ const Signup = () => {
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => event.preventDefault();
   const handleMouseUpPassword = (event) => event.preventDefault();
+  const name = firstName + " " + lastName;
+
+  async function fetchSignUp(e) {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match!", {
+        autoClose: 2000,
+      });
+    }
+    try {
+      await axios.post("http://localhost:3030/auth/signup", {
+        name,
+        email,
+        password,
+      });
+      toast.success("Signup successful! Redirecting...", {
+        autoClose: 2000,
+        onClose: () => {
+          navigate("/auth/signin");
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error.response?.data?.message || "Login failed. Please try again."
+      );
+    }
+  }
   return (
     <div className="container d-flex flex-column align-items-center mt-5 text-white">
       <div className="text-center">
@@ -42,7 +77,7 @@ const Signup = () => {
           Start your financial transformation
         </p>
       </div>
-      <div className="col-12 col-md-5 mt-3">
+      <div className="col-12 col-md-8 col-lg-5 mt-3">
         <div className="card" style={glassStyle}>
           <h2 className="text-center">Create Account</h2>
           <p
@@ -57,9 +92,13 @@ const Signup = () => {
           </p>
           <form className="mt-3 mb-1">
             <div className="col-12">
-              <div className="row">
-                <div className="col-6">
+              <div className="row gy-4 gy-0">
+                <div className="col-12 col-md-6">
                   <TextField
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    autoComplete="off"
+                    fullWidth
                     type="text"
                     required
                     sx={{
@@ -93,11 +132,14 @@ const Signup = () => {
                       ),
                     }}
                     variant="filled"
-                    autoComplete="none"
                   />
                 </div>
-                <div className="col-6">
+                <div className="col-12 col-md-6">
                   <TextField
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    autoComplete="off"
+                    fullWidth
                     type="text"
                     required
                     sx={{
@@ -131,13 +173,15 @@ const Signup = () => {
                       ),
                     }}
                     variant="filled"
-                    autoComplete="none"
                   />
                 </div>
               </div>
             </div>
             <div>
               <TextField
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="off"
                 className="mt-4"
                 type="email"
                 required
@@ -173,11 +217,13 @@ const Signup = () => {
                   ),
                 }}
                 variant="filled"
-                autoComplete="none"
               />
             </div>
             <div>
               <TextField
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="off"
                 required
                 variant="filled"
                 className="mt-4"
@@ -239,6 +285,9 @@ const Signup = () => {
             </div>
             <div>
               <TextField
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="off"
                 required
                 variant="filled"
                 className="mt-4"
@@ -311,6 +360,7 @@ const Signup = () => {
             </div>
             <div>
               <Button
+                onClick={fetchSignUp}
                 className="login-submit"
                 fullWidth
                 variant="contained"
@@ -332,6 +382,18 @@ const Signup = () => {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

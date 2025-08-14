@@ -38,7 +38,7 @@ const Signin = () => {
   const fetchSignin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:3030/auth/login",
         {
           email,
@@ -54,8 +54,6 @@ const Signin = () => {
           navigate("/");
         },
       });
-
-      console.log(res.data);
     } catch (error) {
       console.log(error);
       toast.error(
@@ -76,7 +74,7 @@ const Signin = () => {
           Welcome back to your financial journey
         </p>
       </div>
-      <div className="col-12 col-md-5 mt-3">
+      <div className="col-12 col-md-8 col-lg-5 mt-3">
         <div className="card" style={glassStyle}>
           <h2 className="text-center">Sign In</h2>
           <p
