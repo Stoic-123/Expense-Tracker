@@ -2,6 +2,7 @@ import React from "react";
 import MonthlyChart from "../MonthlyChart";
 import { Flex } from "antd";
 import MonthlyProgress from "../MonthlyProgress";
+import "bootstrap/dist/css/bootstrap.min.css";
 const MonthlyExpense = ({ isDark }) => {
   return (
     <div>

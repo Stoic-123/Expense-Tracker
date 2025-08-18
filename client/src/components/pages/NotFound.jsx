@@ -4,6 +4,7 @@ import { Card, CardContent, IconButton, Button } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import "bootstrap/dist/css/bootstrap.min.css";
 const NotFound = () => {
   const navigate = useNavigate();
   return (

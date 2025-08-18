@@ -1,5 +1,6 @@
 import React from "react";
 import "./profile.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { Select, Switch } from "antd";
 
 const { Option } = Select;

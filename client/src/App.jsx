@@ -10,10 +10,9 @@ import Profile from "./components/pages/Profile";
 import Navbar from "./components/Navbar";
 import NotFound from "./components/pages/NotFound";
 import Signin from "./components/pages/Signin";
-
+import Landing from "./components/pages/landing/Landing";
 import ProtectRoute from "./utils/ProtectRoute";
 import LoaderOnRouteChange from "./utils/LoaderOnRouteChange";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Signup from "./components/pages/Signup";
 import ForgotPass from "./components/pages/ForgotPass";
 const AuthLayout = () => (
@@ -96,6 +95,7 @@ const App = () => {
         <Route path="/auth/signin" element={<Signin />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/forgot-password" element={<ForgotPass />} />
+        <Route path="/landing" element={<Landing />}></Route>
       </Route>
       <Route
         element={

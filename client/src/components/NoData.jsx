@@ -1,5 +1,5 @@
 import React from "react";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 const NoData = () => {
   return (
     <div className="container w-100">

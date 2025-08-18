@@ -3,7 +3,7 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PieChartIcon from "@mui/icons-material/PieChart";
 import Chip from "@mui/material/Chip";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 const DailyExpense = ({ isDark }) => {
   return (
     <div>

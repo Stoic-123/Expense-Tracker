@@ -11,6 +11,7 @@ import Chip from "@mui/material/Chip";
 import { DatePicker, Space } from "antd";
 import "./allExpense.css";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import "bootstrap/dist/css/bootstrap.min.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 const onChange = (date, dateString) => {

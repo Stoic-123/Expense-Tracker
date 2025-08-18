@@ -1,5 +1,6 @@
 import React from "react";
 import "./sidebar.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { NavLink } from "react-router-dom";
 import WalletIcon from "@mui/icons-material/Wallet";
 import MenuIcon from "@mui/icons-material/Menu";
