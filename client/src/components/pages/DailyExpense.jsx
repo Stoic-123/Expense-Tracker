@@ -4,6 +4,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PieChartIcon from "@mui/icons-material/PieChart";
 import Chip from "@mui/material/Chip";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./dailyExpense.css";
 const DailyExpense = ({ isDark }) => {
   return (
     <div>
@@ -14,7 +15,7 @@ const DailyExpense = ({ isDark }) => {
       <div className="row gy-3 gy-md-0">
         <div className="col-12 col-md-4">
           <div
-            className="card p-3 border-0"
+            className="card p-3 border-radius border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -35,7 +36,7 @@ const DailyExpense = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-4">
           <div
-            className="card p-3 border-0"
+            className="card p-3 border-radius border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -56,7 +57,7 @@ const DailyExpense = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-4">
           <div
-            className="card p-3 border-0"
+            className="card p-3 border-radius border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -77,7 +78,7 @@ const DailyExpense = ({ isDark }) => {
         </div>
       </div>
       <div
-        className="col-12 p-4 mt-4"
+        className="col-12 border-radius p-4 mt-4"
         style={{
           backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
           boxShadow:

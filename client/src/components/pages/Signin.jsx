@@ -51,7 +51,7 @@ const Signin = () => {
       toast.success("Login successful! Redirecting...", {
         autoClose: 2000,
         onClose: () => {
-          navigate("/");
+          navigate("/dashboard");
         },
       });
     } catch (error) {
@@ -65,7 +65,7 @@ const Signin = () => {
   return (
     <div className="container d-flex flex-column align-items-center mt-5 text-white">
       <div className="text-center">
-        <h1 className="login-text">ExpenseTracker</h1>
+        <h1 className="login-text">Jomnay</h1>
         <p
           style={{
             fontSize: "19px",

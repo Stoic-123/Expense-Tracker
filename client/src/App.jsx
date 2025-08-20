@@ -15,6 +15,7 @@ import ProtectRoute from "./utils/ProtectRoute";
 import LoaderOnRouteChange from "./utils/LoaderOnRouteChange";
 import Signup from "./components/pages/Signup";
 import ForgotPass from "./components/pages/ForgotPass";
+
 const AuthLayout = () => (
   <div
     className="d-flex  justify-content-center   pb-5"
@@ -40,6 +41,7 @@ const MainLayout = ({ isDark, setCollapse, setIsDark, isCollapse }) => {
   return (
     <ProtectRoute>
       <LoaderOnRouteChange />
+
       <div className=" d-flex justify-content-between position-relative">
         <div
           className="vh-100 d-none d-md-block position-sticky start-0 top-0"
@@ -95,7 +97,6 @@ const App = () => {
         <Route path="/auth/signin" element={<Signin />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/forgot-password" element={<ForgotPass />} />
-        <Route path="/landing" element={<Landing />}></Route>
       </Route>
       <Route
         element={
@@ -107,7 +108,6 @@ const App = () => {
           />
         }
       >
-        <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={<Dashboard isDark={isDark} />} />
         <Route
           path="/dashboard/expenses"
@@ -130,6 +130,8 @@ const App = () => {
           element={<Profile isDark={isDark} />}
         />
       </Route>
+      <Route path="/" element={<Navigate to="/landing" />} />
+      <Route path="/landing" element={<Landing />}></Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

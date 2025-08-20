@@ -116,7 +116,7 @@ const ForgotPass = () => {
           <p className="text-light">Reset</p>
         </div>
       </div>
-      <div className="col-12 col-md-5 d-none">
+      <div className="col-12 col-md-5 ">
         <div className="card p-4" style={glassStyle}>
           <h2 className="text-center">Enter Your Email</h2>
           <p
@@ -265,7 +265,7 @@ const ForgotPass = () => {
           </form>
         </div>
       </div>
-      <div className="col-12 col-md-5 ">
+      <div className="col-12 col-md-5 d-none">
         <div className="card p-4" style={glassStyle}>
           <h2 className="text-center">Enter Your Email</h2>
           <p

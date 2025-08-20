@@ -24,7 +24,7 @@ const Sidebar = ({ handleCollapse, isCollapse, isDark }) => {
         {!isCollapse ? (
           <>
             <WalletIcon className="text-primary" fontSize="large" />
-            <h5 className="text-white mb-0 px-2">ExpenseTracker</h5>
+            <h5 className="text-white mb-0 px-2">Jomnay</h5>
             <IconButton
               className="bg-transparent text-white border-0 "
               onClick={handleCollapse}

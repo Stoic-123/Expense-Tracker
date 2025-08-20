@@ -212,7 +212,7 @@ const AllExpense = ({ isDark }) => {
         </form>
       </div>
       <div
-        className="col-12 p-4"
+        className="col-12 border-radius p-4"
         style={{
           backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
           boxShadow:

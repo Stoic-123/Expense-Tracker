@@ -1,4 +1,7 @@
 .expense-list ul li {
- margin-left: -20px;
- padding: 10px 0;
+  margin-left: -20px;
+  padding: 10px 0;
+}
+.border-radius {
+  border-radius: 25px !important;
 }

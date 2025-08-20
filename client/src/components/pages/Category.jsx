@@ -138,7 +138,7 @@ const Category = ({ isDark }) => {
       <div className="row gy-md-4 gy-3 ">
         <div className="col-12 col-md-4">
           <div
-            className="card p-4"
+            className="card p-4 border-radius"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               boxShadow:
@@ -184,7 +184,7 @@ const Category = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-4">
           <div
-            className="card p-4"
+            className="card p-4 border-radius"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               boxShadow:
@@ -230,7 +230,7 @@ const Category = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-4">
           <div
-            className="card p-4"
+            className="card p-4 border-radius"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               boxShadow:
@@ -276,7 +276,7 @@ const Category = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-4">
           <div
-            className="card p-4"
+            className="card p-4 border-radius"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               boxShadow:
@@ -322,7 +322,7 @@ const Category = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-4">
           <div
-            className="card p-4"
+            className="card p-4 border-radius"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               boxShadow:
@@ -368,7 +368,7 @@ const Category = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-4">
           <div
-            className="card p-4"
+            className="card p-4 border-radius"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               boxShadow:

@@ -2,6 +2,7 @@ import React from "react";
 import MonthlyChart from "../MonthlyChart";
 import { Flex } from "antd";
 import MonthlyProgress from "../MonthlyProgress";
+import "./monthlyExpense.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 const MonthlyExpense = ({ isDark }) => {
   return (
@@ -15,7 +16,7 @@ const MonthlyExpense = ({ isDark }) => {
       <div className="row mt-4 gy-3 gy-md-0">
         <div className="col-12 col-md-6">
           <div
-            className="card p-3 border-0"
+            className="card p-3 border-radius border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -31,7 +32,7 @@ const MonthlyExpense = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-6">
           <div
-            className="card p-3 border-0"
+            className="card p-3 border-radius border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -49,7 +50,7 @@ const MonthlyExpense = ({ isDark }) => {
       <div className="row mt-1 mt-md-4 gy-3 gy-md-0">
         <div className="col-12 col-md-6">
           <div
-            className="card p-3 border-0"
+            className="card p-3 border-radius border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -67,7 +68,7 @@ const MonthlyExpense = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-6">
           <div
-            className="card p-3 border-0"
+            className="card p-3 border-radius border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",

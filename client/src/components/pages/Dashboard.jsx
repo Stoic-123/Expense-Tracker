@@ -55,7 +55,7 @@ const Dashboard = ({ isDark }) => {
       <div className="row gx-md-4 gx-0 gy-3 gy-md-0">
         <div className="col-12 col-md-3">
           <div
-            className="card p-3 border-0"
+            className="card border-radius p-3 border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -78,7 +78,7 @@ const Dashboard = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-3">
           <div
-            className="card p-3 border-0"
+            className="card border-radius p-3 border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -101,7 +101,7 @@ const Dashboard = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-3">
           <div
-            className="card p-3 border-0"
+            className="card border-radius p-3 border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -124,7 +124,7 @@ const Dashboard = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-3">
           <div
-            className="card p-3 border-0"
+            className="card border-radius p-3 border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -149,7 +149,7 @@ const Dashboard = ({ isDark }) => {
       <div className="row mt-4 gx-4 gy-3 gy-md-0">
         <div className="col-12 col-md-6">
           <div
-            className="card p-4 border-0"
+            className="card border-radius p-4 border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -165,7 +165,7 @@ const Dashboard = ({ isDark }) => {
         </div>
         <div className="col-12 col-md-6">
           <div
-            className="card p-4 border-0"
+            className="card border-radius p-4 border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -183,7 +183,7 @@ const Dashboard = ({ isDark }) => {
       <div className="mt-4">
         <div className="col-12">
           <div
-            className="card p-4 border-0"
+            className="card border-radius p-4 border-0"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",

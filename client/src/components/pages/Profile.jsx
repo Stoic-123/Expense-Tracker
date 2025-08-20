@@ -24,7 +24,7 @@ const Profile = ({ isDark, value, onChange }) => {
       <div className="mt-4 row">
         <div className="col-6">
           <div
-            className="card p-4"
+            className="card p-4 border-radius"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
@@ -105,7 +105,7 @@ const Profile = ({ isDark, value, onChange }) => {
         </div>
         <div className="col-6">
           <div
-            className="card p-4"
+            className="card p-4 border-radius"
             style={{
               backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
               color: isDark ? "#ffffff" : "#020817",
