@@ -10,7 +10,8 @@ import MyPieChart from "../PieChart";
 import Chip from "@mui/material/Chip";
 import NoData from "../NoData";
 import "./dashboard.css";
-
+const apiUrl =
+  process.env.NODE_ENV === "production" ? "/api" : "http://localhost:5000";
 const Dashboard = ({ isDark }) => {
   const [dashboardData, setDashboardData] = useState({});
   const [dasRecentExpense, setDasRecentExpense] = useState([]);
@@ -18,8 +19,10 @@ const Dashboard = ({ isDark }) => {
     const fetchDashboardData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3030/expense/get-dashboard-data",
-          { withCredentials: true }
+          `${apiUrl}/expense/get-dashboard-data`,
+          {
+            withCredentials: true,
+          }
         );
         // dashboardData is inside response.data.data
         setDashboardData(response.data.data);
@@ -34,7 +37,7 @@ const Dashboard = ({ isDark }) => {
     async function fetchRecentExpense() {
       try {
         const response = await axios.get(
-          "http://localhost:3030/expense/get-transaction-list-dashboard",
+          `${apiUrl}/expense/get-transaction-list-dashboard`,
           {
             withCredentials: true,
           }
@@ -52,8 +55,8 @@ const Dashboard = ({ isDark }) => {
       <p className="text-secondary">
         Welcome back! Here's your expense overview.
       </p>
-      <div className="row gx-md-4 gx-0 gy-3 gy-md-0">
-        <div className="col-12 col-md-3">
+      <div className="row gx-md-4 gx-0 gy-3 gy-lg-0">
+        <div className="col-12 col-md-6 col-lg-3">
           <div
             className="card border-radius p-3 border-0"
             style={{
@@ -76,7 +79,7 @@ const Dashboard = ({ isDark }) => {
             </p>
           </div>
         </div>
-        <div className="col-12 col-md-3">
+        <div className="col-12 col-md-6 col-lg-3">
           <div
             className="card border-radius p-3 border-0"
             style={{
@@ -99,7 +102,7 @@ const Dashboard = ({ isDark }) => {
             </p>
           </div>
         </div>
-        <div className="col-12 col-md-3">
+        <div className="col-12 col-md-6 col-lg-3">
           <div
             className="card border-radius p-3 border-0"
             style={{
@@ -122,7 +125,7 @@ const Dashboard = ({ isDark }) => {
             </p>
           </div>
         </div>
-        <div className="col-12 col-md-3">
+        <div className="col-12 col-md-6 col-lg-3">
           <div
             className="card border-radius p-3 border-0"
             style={{

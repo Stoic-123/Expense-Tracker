@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
-import { Route, Routes, Navigate, useLocation, Outlet } from "react-router-dom";
+import { Route, Routes, Navigate, Outlet } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import AllExpense from "./components/pages/AllExpense";
 import DailyExpense from "./components/pages/DailyExpense";
@@ -34,9 +34,11 @@ const MainLayout = ({ isDark, setCollapse, setIsDark, isCollapse }) => {
   };
   const handleDarkMode = () => {
     setIsDark(true);
+    localStorage.setItem("theme", "dark");
   };
   const handleLightMode = () => {
     setIsDark(false);
+    localStorage.setItem("theme", "light");
   };
   return (
     <ProtectRoute>
@@ -44,7 +46,7 @@ const MainLayout = ({ isDark, setCollapse, setIsDark, isCollapse }) => {
 
       <div className=" d-flex justify-content-between position-relative">
         <div
-          className="vh-100 d-none d-md-block position-sticky start-0 top-0"
+          className="vh-100 d-none d-lg-block position-sticky start-0 top-0"
           style={{
             width: isCollapse ? "5%" : "25%",
             backgroundColor: isDark ? "#1F2937" : "#123a8b",
@@ -89,6 +91,14 @@ const MainLayout = ({ isDark, setCollapse, setIsDark, isCollapse }) => {
 const App = () => {
   const [isDark, setIsDark] = useState(false);
   const [isCollapse, setCollapse] = useState(false);
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      setIsDark(true);
+    } else {
+      setIsDark(false);
+    }
+  }, []);
 
   return (
     <Routes>

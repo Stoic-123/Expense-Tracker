@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  backend:
+    command: bun index.js
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - DB_HOST=host.docker.internal
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - MAIL_TOKEN=${MAIL_TOKEN}
+      - EMAIL_USER=${EMAIL_USER}
+      - USER_PASS=${USER_PASS}
+    ports:
+      - "5000:5000"
+
+  nginx:
+    ports:
+      - "80:80"
+
+  db:
+    ports:
+      - "3308:3307"

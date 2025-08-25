@@ -12,6 +12,8 @@ import HttpsIcon from "@mui/icons-material/Https";
 import axios from "axios";
 import "./signin.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+const apiUrl =
+  process.env.NODE_ENV === "production" ? "/api" : "http://localhost:5000";
 const glassStyle = {
   background: "rgba(178, 110, 215, 0.2)",
   backdropFilter: "blur(10px)",
@@ -39,7 +41,7 @@ const Signin = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "http://localhost:3030/auth/login",
+        `${apiUrl}/auth/login`,
         {
           email,
           password,

@@ -23,6 +23,7 @@
     "zod": "^4.0.5"
   },
   "scripts": {
-    "dev": "bun run --watch index.js"
+    "dev": "bun run --watch index.js",
+    "start": "bun run index.js" 
   }
 }

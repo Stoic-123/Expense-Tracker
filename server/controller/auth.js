@@ -97,7 +97,7 @@ export const sendOtp = async (c) => {
       );
     }
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
     await insertOtp(users.id, otp, expiresAt);
     await transporter.sendMail({
       from: process.env.EMAIL_USER,

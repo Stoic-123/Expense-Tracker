@@ -4,14 +4,15 @@ import { useState } from "react";
 import { useEffect } from "react";
 import NoData from "./NoData";
 import axios from "axios";
-
+const apiUrl =
+  process.env.NODE_ENV === "production" ? "/api" : "http://localhost:5000";
 const MyPieChart = () => {
   const [categoryChart, setCategoryChart] = useState([]);
   useEffect(() => {
     async function fetchCategoryChart() {
       try {
         const response = await axios.get(
-          "http://localhost:3030/expense/get-category-spent-chart",
+          `${apiUrl}/expense/get-category-spent-chart`,
           {
             withCredentials: true,
           }

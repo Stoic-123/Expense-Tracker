@@ -12,14 +12,15 @@ import "./lineChart.css";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
-
+const apiUrl =
+  process.env.NODE_ENV === "production" ? "/api" : "http://localhost:5000";
 const MyLineChart = () => {
   const [dailySpend, setDailySpent] = useState([]);
   useEffect(() => {
     async function fetchDailySpendingGraph() {
       try {
         const response = await axios.get(
-          "http://localhost:3030/expense/get-daily-spent-chart",
+          `${apiUrl}/expense/get-daily-spent-chart`,
           {
             withCredentials: true,
           }

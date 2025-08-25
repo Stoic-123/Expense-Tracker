@@ -1,0 +1,20 @@
+.sidebar-mobile ul li {
+  padding: 8px 0;
+  list-style: none;
+}
+.sidebar-mobile ul li .link-tag {
+  color: rgb(46, 43, 43);
+  text-decoration: none;
+  padding: 8px 12px;
+  display: block;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-mobile ul li .active {
+  background-color: #3b82f6;
+  color: rgb(228, 228, 237);
+}
+.sidebar-mobile ul li .link-tag:not(.active):hover {
+  background-color: rgba(119, 136, 153, 0.409);
+}
