@@ -16,6 +16,7 @@ import {
   getDailySpentChart,
   getSpentCategoryChart,
   getTransactionListDashboard,
+  getAllCategory,
 } from "../model/expense.js";
 export const createCategory = async (c) => {
   try {
@@ -357,6 +358,28 @@ export const selectTransactionListDashboard = async (c) => {
       result: true,
       message: "Data selected successfully..",
       data: TransactionListDashboardData.row,
+    });
+  } catch (error) {
+    return c.json({ result: false, message: error.message });
+  }
+};
+export const selectAllCategory = async (c) => {
+  try {
+    const user_id = await c.get("user").id;
+    if (!user_id) {
+      return c.json(
+        { result: false, message: "User_id is not defined..!" },
+        401
+      );
+    }
+    const AllCategoryData = await getAllCategory(user_id);
+    if (AllCategoryData.length === 0) {
+      return c.json({ result: false, message: "No data in database..!" }, 404);
+    }
+    return c.json({
+      result: true,
+      message: "Data selected successfully..",
+      data: AllCategoryData.rows,
     });
   } catch (error) {
     return c.json({ result: false, message: error.message });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Backdrop from "@mui/material/Backdrop";
@@ -14,6 +14,12 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import axios from "axios";
+import NoData from "../NoData";
+import { ToastContainer, toast } from "react-toastify";
+
+const apiUrl =
+  process.env.NODE_ENV === "production" ? "/api" : "http://localhost:5000";
 const onChange = (date, dateString) => {
   console.log(date, dateString);
 };
@@ -32,12 +38,73 @@ const style = {
   borderRadius: "6px",
 };
 const AllExpense = ({ isDark }) => {
+  const [data, setData] = useState([]);
+  const [selectId, setSelectId] = useState("");
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState("");
+  const [categoryData, setCategoryData] = useState([]);
+  const [search, setSearch] = useState("");
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [open2, setOpen2] = React.useState(false);
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/expense/get-all-category`, {
+          withCredentials: true,
+        });
+        setCategoryData(response.data.data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    fetchCategory();
+  }, []);
+  useEffect(() => {
+    const fetchAllExpense = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/expense/get-expense`, {
+          withCredentials: true,
+        });
+        setData(response.data.expense_record);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    fetchAllExpense();
+  }, [data]);
+  const addExpense = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        `${apiUrl}/expense/add-expense`,
+        {
+          amount: amount,
+          description: description,
+          category_id: category,
+          date: date,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      handleClose();
+      toast.success("Creating Expense Successfully..", {
+        autoClose: 2000,
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const filterData = data.filter((item) =>
+    item.description.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between">
@@ -82,6 +149,8 @@ const AllExpense = ({ isDark }) => {
                       </label>
 
                       <input
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
                         style={{
                           backgroundColor: "transparent",
                           border: "none",
@@ -104,6 +173,8 @@ const AllExpense = ({ isDark }) => {
                         Description
                       </label>
                       <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         style={{
                           backgroundColor: "transparent",
                           border: "none",
@@ -125,6 +196,8 @@ const AllExpense = ({ isDark }) => {
                         Category
                       </label>
                       <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
                         defaultValue=""
                         className="form-select custom-select-style mt-1 py-2"
                         aria-label="Default select example"
@@ -132,11 +205,11 @@ const AllExpense = ({ isDark }) => {
                         <option defaultValue value="" disabled hidden>
                           Select an option
                         </option>
-                        <option value="1">Gym</option>
-                        <option value="2">Transportation</option>
-                        <option value="3">School</option>
-                        <option value="4">Phone bill</option>
-                        <option value="5">Food</option>
+                        {categoryData.map((data) => (
+                          <option value={data.category_id}>
+                            {data.category_name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="mb-3">
@@ -151,10 +224,10 @@ const AllExpense = ({ isDark }) => {
                           className="py-2"
                           style={{ width: "100%" }}
                           format={{
-                            format: "DD-MMM-YYYY",
+                            format: "YYYY-MM-DD",
                             type: "mask",
                           }}
-                          onChange={onChange}
+                          onChange={(date, dateString) => setDate(dateString)}
                         />
                       </Space>
                     </div>
@@ -169,8 +242,12 @@ const AllExpense = ({ isDark }) => {
                       >
                         Cancel
                       </Button>
-                      <Button className="ms-3 text-black" variant="contained">
-                        Update Expense
+                      <Button
+                        onClick={addExpense}
+                        className="ms-3 text-black"
+                        variant="contained"
+                      >
+                        Add Expense
                       </Button>
                     </div>
                   </form>
@@ -183,6 +260,8 @@ const AllExpense = ({ isDark }) => {
       <div className=" my-4">
         <form>
           <TextField
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="col-12 "
             variant="outlined"
             sx={{
@@ -212,7 +291,7 @@ const AllExpense = ({ isDark }) => {
         </form>
       </div>
       <div
-        className="col-12 border-radius p-4"
+        className="col-12 border-radius p-4 "
         style={{
           backgroundColor: isDark ? "#020817" : "#EDEDEDFF",
           boxShadow:
@@ -221,253 +300,91 @@ const AllExpense = ({ isDark }) => {
         }}
       >
         <h4>Recent Expenses</h4>
-        <div className="mt-4 all-expense-list">
-          <ul>
-            <li
-              className={`d-flex align-items-center justify-content-between ${
-                isDark ? "dark-li" : "light-li"
-              }`}
+        <div className="mt-4 all-expense-list" style={{ minHeight: "400px" }}>
+          {filterData.length === 0 ? (
+            <div
               style={{
-                backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
+                height: "400px",
               }}
             >
-              <div className="d-flex align-items-center">
-                <span
-                  className="me-3"
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: "yellow",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <div>
-                  <p
-                    className="mb-0"
+              <NoData />
+            </div>
+          ) : (
+            <ul>
+              {filterData.map((data) => {
+                return (
+                  <li
+                    key={data.id}
+                    className={`d-flex align-items-center justify-content-between ${
+                      isDark ? "dark-li" : "light-li"
+                    }`}
                     style={{
-                      fontSize: "17px",
+                      backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
                     }}
                   >
-                    Electricity bill
-                  </p>
-                  <div className="d-flex ">
-                    <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                    <Chip
-                      size="small"
-                      sx={{
-                        color: isDark ? "white" : "#020817",
-                        backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                      }}
-                      label="Utilities
-"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="d-flex align-items-center">
-                <h5 className="mb-0">$25.50</h5>
-                <IconButton
-                  onClick={handleOpen2}
-                  className="mx-3"
-                  style={{
-                    color: isDark ? "white" : "black",
-                  }}
-                >
-                  <EditNoteIcon />
-                </IconButton>
-                <IconButton
-                  style={{
-                    color: isDark ? "white" : "black",
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </div>
-            </li>
-            <li
-              className={`d-flex align-items-center justify-content-between ${
-                isDark ? "dark-li" : "light-li"
-              }`}
-              style={{
-                backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
-              }}
-            >
-              <div className="d-flex align-items-center">
-                <span
-                  className="me-3"
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: "yellow",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <div>
-                  <p
-                    className="mb-0"
-                    style={{
-                      fontSize: "17px",
-                    }}
-                  >
-                    Electricity bill
-                  </p>
-                  <div className="d-flex ">
-                    <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                    <Chip
-                      size="small"
-                      sx={{
-                        color: isDark ? "white" : "#020817",
-                        backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                      }}
-                      label="Utilities
-"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="d-flex align-items-center">
-                <h5 className="mb-0">$25.50</h5>
-                <IconButton
-                  onClick={handleOpen2}
-                  className="mx-3"
-                  style={{
-                    color: isDark ? "white" : "black",
-                  }}
-                >
-                  <EditNoteIcon />
-                </IconButton>
-                <IconButton
-                  style={{
-                    color: isDark ? "white" : "black",
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </div>
-            </li>
-            <li
-              className={`d-flex align-items-center justify-content-between ${
-                isDark ? "dark-li" : "light-li"
-              }`}
-              style={{
-                backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
-              }}
-            >
-              <div className="d-flex align-items-center">
-                <span
-                  className="me-3"
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: "yellow",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <div>
-                  <p
-                    className="mb-0"
-                    style={{
-                      fontSize: "17px",
-                    }}
-                  >
-                    Electricity bill
-                  </p>
-                  <div className="d-flex ">
-                    <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                    <Chip
-                      size="small"
-                      sx={{
-                        color: isDark ? "white" : "#020817",
-                        backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                      }}
-                      label="Utilities
-"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="d-flex align-items-center">
-                <h5 className="mb-0">$25.50</h5>
-                <IconButton
-                  onClick={handleOpen2}
-                  className="mx-3"
-                  style={{
-                    color: isDark ? "white" : "black",
-                  }}
-                >
-                  <EditNoteIcon />
-                </IconButton>
-                <IconButton
-                  style={{
-                    color: isDark ? "white" : "black",
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </div>
-            </li>
-            <li
-              className={`d-flex align-items-center justify-content-between ${
-                isDark ? "dark-li" : "light-li"
-              }`}
-              style={{
-                backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
-              }}
-            >
-              <div className="d-flex align-items-center">
-                <span
-                  className="me-3"
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: "yellow",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <div>
-                  <p
-                    className="mb-0"
-                    style={{
-                      fontSize: "17px",
-                    }}
-                  >
-                    Electricity bill
-                  </p>
-                  <div className="d-flex ">
-                    <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                    <Chip
-                      size="small"
-                      sx={{
-                        color: isDark ? "white" : "#020817",
-                        backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                      }}
-                      label="Utilities
-"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="d-flex align-items-center">
-                <h5 className="mb-0">$25.50</h5>
-                <IconButton
-                  onClick={handleOpen2}
-                  className="mx-3"
-                  style={{
-                    color: isDark ? "white" : "black",
-                  }}
-                >
-                  <EditNoteIcon />
-                </IconButton>
-                <IconButton
-                  style={{
-                    color: isDark ? "white" : "black",
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </div>
-            </li>
-          </ul>
+                    <div className="d-flex align-items-center">
+                      <span
+                        className="me-3"
+                        style={{
+                          width: "14px",
+                          height: "14px",
+                          backgroundColor: `${data.category_color}`,
+                          borderRadius: "50%",
+                        }}
+                      ></span>
+                      <div>
+                        <p
+                          className="mb-0"
+                          style={{
+                            fontSize: "17px",
+                          }}
+                        >
+                          {data.description}
+                        </p>
+                        <div className="d-flex ">
+                          <p className="pe-2 mb-0 text-secondary">
+                            {new Date(data.date).toLocaleDateString()}
+                          </p>
+                          <Chip
+                            size="small"
+                            sx={{
+                              color: isDark ? "white" : "#020817",
+                              backgroundColor: isDark
+                                ? "#28364DC1"
+                                : "#65676B58",
+                            }}
+                            label={data.category_name}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="d-flex align-items-center">
+                      <h5 className="mb-0">${data.amount}</h5>
+                      <IconButton
+                        onClick={() => {
+                          setSelectId(data.id);
+                          handleOpen2();
+                        }}
+                        className="mx-3"
+                        style={{
+                          color: isDark ? "white" : "black",
+                        }}
+                      >
+                        <EditNoteIcon />
+                      </IconButton>
+                      <IconButton
+                        style={{
+                          color: isDark ? "white" : "black",
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
@@ -593,6 +510,18 @@ const AllExpense = ({ isDark }) => {
           </Modal>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

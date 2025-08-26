@@ -169,8 +169,8 @@ export const getDashboardTotalSpent = async (user_id) => {
   const totalLastMonth = await db.query(sql2, [user_id]);
   const thistMonth = totalThisMonth[0];
   const lastMonth = totalLastMonth[0];
-  const thisMonthValue = thistMonth[0]?.total;
-  const lastMonthValue = lastMonth[0]?.total;
+  const thisMonthValue = thistMonth[0]?.total || 0;
+  const lastMonthValue = lastMonth[0]?.total || 0;
   let percent = 0;
   if (lastMonthValue !== 0) {
     percent =
@@ -353,4 +353,16 @@ export const getTransactionListDashboard = async (user_id) => {
   `;
   const [row] = await db.query(sql, [user_id]);
   return { row };
+};
+export const getAllCategory = async (user_id) => {
+  const sql = `SELECT DISTINCT
+                c.id AS category_id,
+                c.name AS category_name
+                FROM expense_tracker e
+                LEFT JOIN expense_categories c
+                ON e.category_id = c.id
+                WHERE e.user_id =?
+  `;
+  const [rows] = await db.query(sql, [user_id]);
+  return { rows };
 };
