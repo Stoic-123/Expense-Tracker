@@ -17,6 +17,8 @@ import {
   getSpentCategoryChart,
   getTransactionListDashboard,
   getAllCategory,
+  modifyExpense,
+  deleteExpense,
 } from "../model/expense.js";
 export const createCategory = async (c) => {
   try {
@@ -61,23 +63,39 @@ export const createExpense = async (c) => {
       category_id,
       date
     );
-    return c.json(
-      {
-        result: true,
-        message: "Expense created successfully..",
-        expense: {
-          id: newExpense.id,
-          user_id: user_id,
-          amount: newExpense.amount,
-          description: newExpense.description,
-          category: newExpense.category_id,
-          date: newExpense.date,
-        },
-      },
-      200
-    );
+    return c.json(newExpense);
   } catch (error) {
     return c.json({ result: false, message: error });
+  }
+};
+export const updateExpense = async (c) => {
+  try {
+    const user_id = c.get("user").id;
+    const id = c.req.param("id");
+    const { amount, description, category_id, date } = await c.req.json();
+    if (!user_id) {
+      return c.json(
+        { result: false, message: "User_id is not defined..!" },
+        404
+      );
+    }
+    if (!amount || !description || !category_id || !date) {
+      return c.json(
+        { result: false, message: "All data are required..!" },
+        401
+      );
+    }
+    const expenseUpdateData = await modifyExpense(
+      amount,
+      description,
+      category_id,
+      date,
+      id,
+      user_id
+    );
+    return c.json(expenseUpdateData);
+  } catch (error) {
+    return c.json({ result: false, message: error.message }, 500);
   }
 };
 export const selectExpense = async (c) => {
@@ -117,25 +135,24 @@ export const selectDailyExpenseData = async (c) => {
         401
       );
     }
+
     const totalData = await getDailyTotal(user_id);
     const averageTransaction = await getAveragePerTransaction(user_id);
     const mostSpentCategory = await getMostSpentCategory(user_id);
-    const daily_amount = totalData.row[0].daily_amount;
-    const transaction = totalData.row[0].transaction;
-    const average_per_transaction =
-      averageTransaction.row[0].average_per_transaction;
-    const most_spent_category = mostSpentCategory.row[0].name;
-    const total_most_spent_category = mostSpentCategory.row[0].total_spent;
-    if (
-      totalData.length === 0 ||
-      averageTransaction.length === 0 ||
-      mostSpentCategory.length === 0
-    ) {
-      return c.json({
-        result: false,
-        message: "Data is not defined in database..!",
-      });
-    }
+
+    const daily_amount = totalData.row?.[0]?.daily_amount || 0;
+    const transaction = totalData.row?.[0]?.transaction || 0;
+    const average_per_transaction = parseFloat(
+      Number(averageTransaction.row?.[0]?.average_per_transaction || 0).toFixed(
+        2
+      )
+    );
+    const most_spent_category =
+      mostSpentCategory.row?.[0]?.name || "Not defined";
+    const total_most_spent_category = parseFloat(
+      Number(mostSpentCategory.row?.[0]?.total_spent || 0).toFixed(2)
+    );
+
     return c.json({
       result: true,
       message: "Data selected successfully..",
@@ -148,9 +165,10 @@ export const selectDailyExpenseData = async (c) => {
       },
     });
   } catch (error) {
-    return c.json({ result: false, message: error });
+    return c.json({ result: false, message: error.message || error });
   }
 };
+
 export const selectTransationList = async (c) => {
   try {
     const user_id = c.get("user").id;
@@ -171,7 +189,7 @@ export const selectTransationList = async (c) => {
       {
         result: true,
         message: "Date selected successfully..",
-        data: transactionList.row,
+        data: transactionList.rows,
       },
       200
     );
@@ -383,5 +401,27 @@ export const selectAllCategory = async (c) => {
     });
   } catch (error) {
     return c.json({ result: false, message: error.message });
+  }
+};
+export const removeExpense = async (c) => {
+  try {
+    const user_id = c.get("user").id;
+    const id = c.req.param("id");
+    if (!user_id) {
+      return c.json(
+        { result: false, message: "User_id is not defined..!" },
+        404
+      );
+    }
+    if (!id) {
+      return c.json(
+        { result: false, message: "Expense_id is not defined..!" },
+        404
+      );
+    }
+    const removeExpenseData = await deleteExpense(id, user_id);
+    return c.json(removeExpenseData);
+  } catch (error) {
+    return c.json({ result: false, message: error.message }, 500);
   }
 };

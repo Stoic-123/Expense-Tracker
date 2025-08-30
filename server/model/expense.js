@@ -18,20 +18,30 @@ export const insertNewExpense = async (
 ) => {
   const sql =
     "INSERT INTO expense_tracker (user_id, amount, description, category_id, date) VALUE(?,?,?,?,?)";
-  const [row] = await db.query(sql, [
+  const [rows] = await db.query(sql, [
     user_id,
     amount,
     description,
     category_id,
     date,
   ]);
+  if (rows.affectedRows === 0) {
+    return {
+      result: false,
+      message: "Failed to create expense..",
+    };
+  }
   return {
-    id: row.insertId,
-    user_id,
-    amount,
-    description,
-    category_id,
-    date,
+    result: true,
+    message: "Expense created successfully..",
+    expense: {
+      id: rows.insertId,
+      user_id: user_id,
+      amount: amount,
+      description: description,
+      category: category_id,
+      date: date,
+    },
   };
 };
 export const getExpenseRecord = async (user_id) => {
@@ -41,6 +51,7 @@ export const getExpenseRecord = async (user_id) => {
                  e.description, 
                  e.date , 
                  c.name as category_name, 
+                 c.id as category_id,
                  c.color as category_color 
                  FROM expense_tracker e 
                  LEFT JOIN expense_categories c ON e.category_id = c.id
@@ -77,6 +88,7 @@ export const getMostSpentCategory = async (user_id) => {
                 SUM(e.amount) as total_spent
                 FROM expense_tracker e
                 LEFT JOIN expense_categories c ON e.category_id = c.id
+                WHERE user_id= ? AND date = CURDATE()
                 GROUP BY e.category_id
                 ORDER BY total_spent DESC
                 LIMIT 1
@@ -87,6 +99,7 @@ export const getMostSpentCategory = async (user_id) => {
 };
 export const getTransactionList = async (user_id) => {
   const sql = `SELECT 
+                e.id,
                 e.description,
                 e.amount,
                 e.date,
@@ -98,8 +111,8 @@ export const getTransactionList = async (user_id) => {
                 WHERE date = CURDATE()  
                 AND user_id =?        
   `;
-  const [row] = await db.query(sql, [user_id]);
-  return { row };
+  const [rows] = await db.query(sql, [user_id]);
+  return { rows };
 };
 export const getTotalSpentMonth = async (user_id) => {
   const sql = `SELECT
@@ -365,4 +378,66 @@ export const getAllCategory = async (user_id) => {
   `;
   const [rows] = await db.query(sql, [user_id]);
   return { rows };
+};
+export const modifyExpense = async (
+  amount,
+  description,
+  category_id,
+  date,
+  id,
+  user_id
+) => {
+  const sql = `UPDATE 
+                expense_tracker 
+                SET 
+                amount=?, 
+                description=?,
+                category_id=?,
+                date=? 
+                WHERE id=? 
+                AND user_id=?`;
+  const [rows] = await db.query(sql, [
+    amount,
+    description,
+    category_id,
+    date,
+    id,
+    user_id,
+  ]);
+  if (rows.affectedRows === 0) {
+    return {
+      result: false,
+      message: "Failed to update expense...",
+    };
+  }
+  if (rows.changedRows === 0) {
+    return {
+      result: true,
+      message: "No changes applied, data is identical..",
+    };
+  }
+  return {
+    result: true,
+    message: "Expense updated successfully..",
+  };
+};
+export const deleteExpense = async (id, user_id) => {
+  const sql = `DELETE
+                FROM expense_tracker
+                WHERE id=?
+                AND user_id=?
+  `;
+  const [rows] = await db.query(sql, [id, user_id]);
+
+  if (rows.affectedRows === 0) {
+    return {
+      result: false,
+      message: "Expense not found or not owned by this user",
+    };
+  }
+
+  return {
+    result: true,
+    message: "Deleted expense succesfully..",
+  };
 };

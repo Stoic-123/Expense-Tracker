@@ -1,11 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PieChartIcon from "@mui/icons-material/PieChart";
 import Chip from "@mui/material/Chip";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./dailyExpense.css";
+import axios from "axios";
+import NoData from "../NoData";
+import { Button } from "@mui/material";
+const apiUrl =
+  process.env.NODE_ENV === "production" ? "/api" : "http://localhost:5000";
+
 const DailyExpense = ({ isDark }) => {
+  const [dailyExpense, setDailyExpense] = useState({});
+  const [dailyList, setDailyList] = useState([]);
+  const [seeMore, setSeeMore] = useState(10);
+  const handleSeeMore = () => {
+    setSeeMore((prev) => prev + 10);
+  };
+  useEffect(() => {
+    const fetchDailyExpense = async () => {
+      try {
+        const data = await axios.get(`${apiUrl}/expense/get-daily-expense`, {
+          withCredentials: true,
+        });
+        setDailyExpense(data.data.data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    fetchDailyExpense();
+  }, []);
+  useEffect(() => {
+    const fetchDailyList = async () => {
+      const data = await axios.get(`${apiUrl}/expense/get-transaction-list`, {
+        withCredentials: true,
+      });
+      setDailyList(data.data.data);
+    };
+    fetchDailyList();
+  }, []);
   return (
     <div>
       <div>
@@ -28,9 +62,11 @@ const DailyExpense = ({ isDark }) => {
               <p className="mb-0">Total Today</p>
               <AttachMoneyIcon className="text-secondary" fontSize="small" />
             </div>
-            <h3 className="pt-2 mb-0">$96.49</h3>
+            <h3 className="pt-2 mb-0">${dailyExpense.daily_amount}</h3>
             <p className="mb-0 text-secondary" style={{ fontSize: "12.8px" }}>
-              5 transactions
+              {dailyExpense.transaction}
+              {dailyExpense.transaction <= 1 && " transaction"}
+              {dailyExpense.transaction > 1 && " transactions"}
             </p>
           </div>
         </div>
@@ -49,9 +85,13 @@ const DailyExpense = ({ isDark }) => {
               <p className="mb-0">Average per Transaction</p>
               <TrendingUpIcon className="text-secondary" fontSize="small" />
             </div>
-            <h3 className="pt-2 mb-0">$19.30</h3>
+            <h3 className="pt-2 mb-0">
+              ${dailyExpense.average_per_transaction}
+            </h3>
             <p className="mb-0 text-secondary" style={{ fontSize: "12.8px" }}>
-              Based on 5 expenses
+              Based on {dailyExpense.transaction}{" "}
+              {dailyExpense.transaction <= 1 && "expense"}
+              {dailyExpense.transaction > 1 && "expenses"}
             </p>
           </div>
         </div>
@@ -70,9 +110,9 @@ const DailyExpense = ({ isDark }) => {
               <p className="mb-0">Most Spent Category</p>
               <PieChartIcon className="text-secondary" fontSize="small" />
             </div>
-            <h3 className="pt-2 mb-0">Food</h3>
+            <h3 className="pt-2 mb-0">{dailyExpense.most_spent_category}</h3>
             <p className="mb-0 text-secondary" style={{ fontSize: "12.8px" }}>
-              $73.49 total
+              ${dailyExpense.total_most_spent_category} total
             </p>
           </div>
         </div>
@@ -87,223 +127,68 @@ const DailyExpense = ({ isDark }) => {
         }}
       >
         <h4>Today's Transactions</h4>
-        <div className="mt-4 all-expense-list">
+        <div
+          className="mt-4 all-expense-list"
+          style={{
+            minHeight: "400px",
+          }}
+        >
           <ul>
-            <li
-              className={`d-flex align-items-center justify-content-between ${
-                isDark ? "dark-li" : "light-li"
-              }`}
-              style={{
-                backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
-              }}
-            >
-              <div className="d-flex align-items-center">
-                <span
-                  className="me-3"
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: "yellow",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <div>
-                  <p
-                    className="mb-0"
+            {dailyList.length === 0 && <NoData />}
+            {dailyList.slice(0, seeMore).map((data) => (
+              <li
+                key={data.id}
+                className={`d-flex align-items-center justify-content-between ${
+                  isDark ? "dark-li" : "light-li"
+                }`}
+                style={{
+                  backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
+                }}
+              >
+                <div className="d-flex align-items-center">
+                  <span
+                    className="me-3"
                     style={{
-                      fontSize: "17px",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: `${data.category_color}`,
+                      borderRadius: "50%",
                     }}
-                  >
-                    Electricity bill
-                  </p>
-                  <div className="d-flex ">
-                    <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                    <Chip
-                      size="small"
-                      sx={{
-                        color: isDark ? "white" : "#020817",
-                        backgroundColor: isDark ? "#28364DC1" : "#65676B58",
+                  ></span>
+                  <div>
+                    <p
+                      className="mb-0"
+                      style={{
+                        fontSize: "17px",
                       }}
-                      label="Utilities
-"
-                    />
+                    >
+                      {data.description}
+                    </p>
+                    <div className="d-flex ">
+                      <p className="pe-2 mb-0 text-secondary">
+                        {new Date(data.date).toLocaleDateString()}
+                      </p>
+                      <Chip
+                        size="small"
+                        sx={{
+                          color: isDark ? "white" : "#020817",
+                          backgroundColor: isDark ? "#28364DC1" : "#65676B58",
+                        }}
+                        label={data.category_name}
+                      />
+                    </div>
                   </div>
                 </div>
+                <h5 className="mb-0">${data.amount}</h5>
+              </li>
+            ))}
+            {seeMore < dailyList.length && (
+              <div className="d-flex justify-content-center pt-2">
+                <Button variant="contained" onClick={handleSeeMore}>
+                  See more...
+                </Button>
               </div>
-              <h5 className="mb-0">$25.00</h5>
-            </li>
-            <li
-              className={`d-flex align-items-center justify-content-between ${
-                isDark ? "dark-li" : "light-li"
-              }`}
-              style={{
-                backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
-              }}
-            >
-              <div className="d-flex align-items-center">
-                <span
-                  className="me-3"
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: "yellow",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <div>
-                  <p
-                    className="mb-0"
-                    style={{
-                      fontSize: "17px",
-                    }}
-                  >
-                    Electricity bill
-                  </p>
-                  <div className="d-flex ">
-                    <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                    <Chip
-                      size="small"
-                      sx={{
-                        color: isDark ? "white" : "#020817",
-                        backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                      }}
-                      label="Utilities
-"
-                    />
-                  </div>
-                </div>
-              </div>
-              <h5 className="mb-0">$25.00</h5>
-            </li>
-            <li
-              className={`d-flex align-items-center justify-content-between ${
-                isDark ? "dark-li" : "light-li"
-              }`}
-              style={{
-                backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
-              }}
-            >
-              <div className="d-flex align-items-center">
-                <span
-                  className="me-3"
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: "yellow",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <div>
-                  <p
-                    className="mb-0"
-                    style={{
-                      fontSize: "17px",
-                    }}
-                  >
-                    Electricity bill
-                  </p>
-                  <div className="d-flex ">
-                    <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                    <Chip
-                      size="small"
-                      sx={{
-                        color: isDark ? "white" : "#020817",
-                        backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                      }}
-                      label="Utilities
-"
-                    />
-                  </div>
-                </div>
-              </div>
-              <h5 className="mb-0">$25.00</h5>
-            </li>
-            <li
-              className={`d-flex align-items-center justify-content-between ${
-                isDark ? "dark-li" : "light-li"
-              }`}
-              style={{
-                backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
-              }}
-            >
-              <div className="d-flex align-items-center">
-                <span
-                  className="me-3"
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: "yellow",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <div>
-                  <p
-                    className="mb-0"
-                    style={{
-                      fontSize: "17px",
-                    }}
-                  >
-                    Electricity bill
-                  </p>
-                  <div className="d-flex ">
-                    <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                    <Chip
-                      size="small"
-                      sx={{
-                        color: isDark ? "white" : "#020817",
-                        backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                      }}
-                      label="Utilities
-"
-                    />
-                  </div>
-                </div>
-              </div>
-              <h5 className="mb-0">$25.00</h5>
-            </li>
-            <li
-              className={`d-flex align-items-center justify-content-between ${
-                isDark ? "dark-li" : "light-li"
-              }`}
-              style={{
-                backgroundColor: isDark ? "transparent" : "#D5D4D4BA",
-              }}
-            >
-              <div className="d-flex align-items-center">
-                <span
-                  className="me-3"
-                  style={{
-                    width: "14px",
-                    height: "14px",
-                    backgroundColor: "yellow",
-                    borderRadius: "50%",
-                  }}
-                ></span>
-                <div>
-                  <p
-                    className="mb-0"
-                    style={{
-                      fontSize: "17px",
-                    }}
-                  >
-                    Electricity bill
-                  </p>
-                  <div className="d-flex ">
-                    <p className="pe-2 mb-0 text-secondary">2024-01-30</p>
-                    <Chip
-                      size="small"
-                      sx={{
-                        color: isDark ? "white" : "#020817",
-                        backgroundColor: isDark ? "#28364DC1" : "#65676B58",
-                      }}
-                      label="Utilities
-"
-                    />
-                  </div>
-                </div>
-              </div>
-              <h5 className="mb-0">$25.00</h5>
-            </li>
+            )}
           </ul>
         </div>
       </div>

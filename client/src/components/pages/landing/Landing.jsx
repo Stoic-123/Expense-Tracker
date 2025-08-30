@@ -10,7 +10,6 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { BorderBeam } from "@stianlarsen/border-beam";
 import AddIcon from "@mui/icons-material/Add";
 import PaidIcon from "@mui/icons-material/Paid";
 import Marquee from "react-fast-marquee";
@@ -488,12 +487,6 @@ const Landing = () => {
         <div className="container pt-5 ">
           <div className="col-12">
             <div className="card p-4 glass">
-              <BorderBeam
-                colorFrom="#FFFFFFFF"
-                colorTo="#8CFF09FF"
-                size={100}
-                duration={9}
-              />
               <div className="glass mx-auto  text-center mt-4 mb-2 px-3  text-warning ">
                 <p className="mb-0">✨ Powerful Interface Design</p>
               </div>

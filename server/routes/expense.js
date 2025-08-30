@@ -14,6 +14,8 @@ import {
   selectCategorySpentChart,
   selectTransactionListDashboard,
   selectAllCategory,
+  updateExpense,
+  removeExpense,
 } from "../controller/expense.js";
 const router = new Hono();
 
@@ -34,4 +36,6 @@ router.get(
   selectTransactionListDashboard
 );
 router.get("/get-all-category", requireAuth, selectAllCategory);
+router.put("/update-expense/:id", requireAuth, updateExpense);
+router.delete("/delete-expense/:id", requireAuth, removeExpense);
 export default router;

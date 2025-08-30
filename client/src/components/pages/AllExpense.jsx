@@ -15,14 +15,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import axios from "axios";
+import dayjs from "dayjs";
 import NoData from "../NoData";
 import { ToastContainer, toast } from "react-toastify";
 
 const apiUrl =
   process.env.NODE_ENV === "production" ? "/api" : "http://localhost:5000";
-const onChange = (date, dateString) => {
-  console.log(date, dateString);
-};
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -40,6 +39,7 @@ const style = {
 const AllExpense = ({ isDark }) => {
   const [data, setData] = useState([]);
   const [selectId, setSelectId] = useState("");
+  const [visible, setVisible] = useState(10);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -48,10 +48,22 @@ const AllExpense = ({ isDark }) => {
   const [search, setSearch] = useState("");
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setAmount("");
+    setDescription("");
+    setCategory("");
+    setDate("");
+  };
   const [open2, setOpen2] = React.useState(false);
   const handleOpen2 = () => setOpen2(true);
-  const handleClose2 = () => setOpen2(false);
+  const handleClose2 = () => {
+    setOpen2(false);
+    setAmount("");
+    setDescription("");
+    setCategory("");
+    setDate("");
+  };
   useEffect(() => {
     const fetchCategory = async () => {
       try {
@@ -65,23 +77,28 @@ const AllExpense = ({ isDark }) => {
     };
     fetchCategory();
   }, []);
+
+  const fetchAllExpense = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/expense/get-expense`, {
+        withCredentials: true,
+      });
+      setData(response.data.expense_record);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   useEffect(() => {
-    const fetchAllExpense = async () => {
-      try {
-        const response = await axios.get(`${apiUrl}/expense/get-expense`, {
-          withCredentials: true,
-        });
-        setData(response.data.expense_record);
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
     fetchAllExpense();
-  }, [data]);
+  }, []);
   const addExpense = async (e) => {
     e.preventDefault();
+    if (!amount || !description || !category || !date) {
+      toast.error("All fields are required", { autoClose: 2000 });
+      return;
+    }
     try {
-      await axios.post(
+      const res = await axios.post(
         `${apiUrl}/expense/add-expense`,
         {
           amount: amount,
@@ -93,10 +110,15 @@ const AllExpense = ({ isDark }) => {
           withCredentials: true,
         }
       );
+      fetchAllExpense();
       handleClose();
-      toast.success("Creating Expense Successfully..", {
+      toast.success(res.data.message, {
         autoClose: 2000,
       });
+      setAmount("");
+      setDescription("");
+      setCategory("");
+      setDate("");
     } catch (error) {
       console.log(error.message);
     }
@@ -104,7 +126,65 @@ const AllExpense = ({ isDark }) => {
   const filterData = data.filter((item) =>
     item.description.toLowerCase().includes(search.toLowerCase())
   );
+  const seeMoreData = () => {
+    setVisible((prev) => prev + 10);
+  };
+  const handleEditClick = (data) => {
+    console.log(data);
+    setSelectId(data.id);
+    setAmount(data.amount);
+    setDescription(data.description);
+    setCategory(data.category_id);
+    setDate(data.date);
+  };
+  const updateExpense = async () => {
+    try {
+      console.log(date, amount, description, category, selectId);
+      const formattedDate = date
+        ? new Date(date).toISOString().split("T")[0]
+        : null;
 
+      const res = await axios.put(
+        `${apiUrl}/expense/update-expense/${selectId}`,
+        {
+          amount: amount,
+          description: description,
+          category_id: category,
+          date: formattedDate,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.data.result) {
+        toast.success(res.data.message, { autoClose: 2000 });
+        fetchAllExpense();
+        handleClose2();
+      } else {
+        toast.error(res.data.message, { autoClose: 2000 });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const deleteExpense = async (data) => {
+    try {
+      const res = await axios.delete(
+        `${apiUrl}/expense/delete-expense/${data.id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.data.result) {
+        fetchAllExpense();
+        toast.success(res.data.message, { autoClose: 2000 });
+      } else {
+        toast.error(res.data.message, { autoClose: 2000 });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between">
@@ -206,7 +286,10 @@ const AllExpense = ({ isDark }) => {
                           Select an option
                         </option>
                         {categoryData.map((data) => (
-                          <option value={data.category_id}>
+                          <option
+                            key={data.category_id}
+                            value={data.category_id}
+                          >
                             {data.category_name}
                           </option>
                         ))}
@@ -310,8 +393,8 @@ const AllExpense = ({ isDark }) => {
               <NoData />
             </div>
           ) : (
-            <ul>
-              {filterData.map((data) => {
+            <ul className="">
+              {filterData.slice(0, visible).map((data) => {
                 return (
                   <li
                     key={data.id}
@@ -362,7 +445,7 @@ const AllExpense = ({ isDark }) => {
                       <h5 className="mb-0">${data.amount}</h5>
                       <IconButton
                         onClick={() => {
-                          setSelectId(data.id);
+                          handleEditClick(data);
                           handleOpen2();
                         }}
                         className="mx-3"
@@ -373,6 +456,9 @@ const AllExpense = ({ isDark }) => {
                         <EditNoteIcon />
                       </IconButton>
                       <IconButton
+                        onClick={() => {
+                          deleteExpense(data);
+                        }}
                         style={{
                           color: isDark ? "white" : "black",
                         }}
@@ -383,6 +469,17 @@ const AllExpense = ({ isDark }) => {
                   </li>
                 );
               })}
+              {visible < filterData.length && (
+                <div className="text-center pt-2">
+                  <Button
+                    className="mx-auto"
+                    onClick={seeMoreData}
+                    variant="contained"
+                  >
+                    See more...
+                  </Button>
+                </div>
+              )}
             </ul>
           )}
           <Modal
@@ -420,6 +517,8 @@ const AllExpense = ({ isDark }) => {
                             "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(225, 226, 227, 0.15) 0px 0px 0px 1px",
                           fontSize: "13px",
                         }}
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
                         type="number"
                         className="form-control mt-1 py-2"
                         id="exampleInputEmail1"
@@ -442,6 +541,8 @@ const AllExpense = ({ isDark }) => {
                             "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(225, 226, 227, 0.15) 0px 0px 0px 1px",
                           fontSize: "13px",
                         }}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         className="form-control mt-1 "
                         id="exampleFormControlTextarea1"
                         rows="4"
@@ -455,18 +556,19 @@ const AllExpense = ({ isDark }) => {
                         Category
                       </label>
                       <select
-                        defaultValue=""
+                        value={category}
+                        onChange={(e) => setCategory(Number(e.target.value))}
                         className="form-select custom-select-style mt-1 py-2"
                         aria-label="Default select example"
                       >
-                        <option defaultValue value="" disabled hidden>
-                          Select an option
-                        </option>
-                        <option value="1">Gym</option>
-                        <option value="2">Transportation</option>
-                        <option value="3">School</option>
-                        <option value="4">Phone bill</option>
-                        <option value="5">Food</option>
+                        {categoryData.map((data) => (
+                          <option
+                            key={data.category_id}
+                            value={data.category_id}
+                          >
+                            {data.category_name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="mb-3">
@@ -481,10 +583,11 @@ const AllExpense = ({ isDark }) => {
                           className="py-2"
                           style={{ width: "100%" }}
                           format={{
-                            format: "DD-MMM-YYYY",
+                            format: "YYYY-MM-DD",
                             type: "mask",
                           }}
-                          onChange={onChange}
+                          value={date ? dayjs(date, "YYYY-MM-DD") : null}
+                          onChange={(d, dateString) => setDate(dateString)}
                         />
                       </Space>
                     </div>
@@ -499,7 +602,11 @@ const AllExpense = ({ isDark }) => {
                       >
                         Cancel
                       </Button>
-                      <Button className="ms-3 text-black" variant="contained">
+                      <Button
+                        onClick={updateExpense}
+                        className="ms-3 text-black"
+                        variant="contained"
+                      >
                         Update Expense
                       </Button>
                     </div>
